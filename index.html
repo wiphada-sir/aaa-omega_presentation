@@ -1,0 +1,1371 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AAA Omega — Technical Presentation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+/* ── Design Tokens ── */
+:root {
+  --primary:        #7f8dd1;
+  --primary-dark:   #1c2b69;
+  --primary-light:  #dde1ff;
+  --primary-lighter:#f0efff;
+  --accent:         #f59e0b;
+  --accent-light:   #fef3c7;
+  --green:          #40a448;
+  --green-light:    #dcfce7;
+  --red:            #ff525f;
+  --red-light:      #ffedec;
+  --orange:         #e96c0a;
+  --orange-light:   #ffede5;
+
+  --bg:             #f1f5f9;
+  --surface:        #ffffff;
+  --surface-2:      #f8fafc;
+  --border:         #e2e8f0;
+  --border-2:       #cbd5e1;
+
+  --text-1:         #0f172a;
+  --text-2:         #334155;
+  --text-3:         #64748b;
+  --text-4:         #94a3b8;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%; height: 100%;
+  font-family: 'Kanit', sans-serif;
+  background: var(--bg);
+  overflow: hidden;
+  user-select: none;
+}
+
+/* ── Progress Bar ── */
+#progress-bar {
+  position: fixed; top: 0; left: 0; height: 4px;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  transition: width 0.4s ease; z-index: 200; border-radius: 0 2px 2px 0;
+}
+
+/* ── Slide Counter ── */
+#slide-counter {
+  position: fixed; bottom: 18px; right: 20px;
+  font-size: 12px; font-weight: 500; color: var(--text-4);
+  z-index: 200; letter-spacing: 0.05em;
+}
+
+/* ── Nav Dots ── */
+#nav-dots {
+  position: fixed; left: 16px; top: 50%; transform: translateY(-50%);
+  display: flex; flex-direction: column; gap: 7px; z-index: 200;
+}
+.dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--border-2); cursor: pointer; transition: all 0.25s;
+}
+.dot.active { background: var(--primary); transform: scale(1.4); }
+.dot:hover:not(.active) { background: var(--primary); opacity: 0.5; }
+
+/* ── Nav Arrows ── */
+.nav-btn {
+  position: fixed; top: 50%; transform: translateY(-50%);
+  width: 38px; height: 38px; border-radius: 50%;
+  background: var(--surface); border: 1.5px solid var(--border);
+  color: var(--text-3); font-size: 18px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  transition: all 0.2s; z-index: 200;
+}
+.nav-btn:hover { border-color: var(--primary); color: var(--primary); box-shadow: 0 4px 14px rgba(127,141,209,0.25); }
+#nav-prev { left: 38px; }
+#nav-next { right: 14px; }
+
+/* ── Slides Container ── */
+#slides { width: 100vw; height: 100vh; position: relative; overflow: hidden; }
+
+/* ── Single Slide ── */
+.slide {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  padding: 28px 76px 28px 60px;
+  opacity: 0; transform: translateX(56px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  pointer-events: none;
+  background: var(--bg);
+}
+.slide.active { opacity: 1; transform: translateX(0); pointer-events: all; }
+
+/* ── Slide Inner ── */
+.slide-inner {
+  width: 100%; max-width: 980px;
+  display: flex; flex-direction: column; gap: 18px;
+}
+
+/* ── Slide Header ── */
+.slide-header { display: flex; flex-direction: column; gap: 4px; }
+.label-row { display: flex; align-items: center; gap: 10px; }
+.label-num {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--primary);
+  background: var(--primary-lighter); border-radius: 20px;
+  padding: 2px 10px;
+}
+.label-tag {
+  font-size: 11px; font-weight: 500; color: var(--text-4);
+  letter-spacing: 0.1em; text-transform: uppercase;
+}
+.slide-title {
+  font-size: 26px; font-weight: 700; color: var(--text-1); line-height: 1.2;
+}
+.slide-desc {
+  font-size: 13.5px; font-weight: 300; color: var(--text-3); line-height: 1.65;
+}
+
+/* ── Cards ── */
+.card {
+  background: var(--surface); border: 1.5px solid var(--border);
+  border-radius: 12px; padding: 16px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+.card-blue   { background: var(--primary-lighter); border-color: var(--primary-light); }
+.card-amber  { background: var(--accent-light);    border-color: #fde68a; }
+.card-green  { background: var(--green-light);     border-color: #bbf7d0; }
+.card-red    { background: var(--red-light);       border-color: #ffb3b3; }
+.card-orange { background: var(--orange-light);    border-color: #ffb68e; }
+.card-gray   { background: var(--surface-2);       border-color: var(--border); }
+
+.card-label {
+  font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--primary); margin-bottom: 8px;
+}
+.card-title { font-size: 14px; font-weight: 600; color: var(--text-1); margin-bottom: 6px; }
+.card-body  { font-size: 12.5px; color: var(--text-2); line-height: 1.7; }
+
+/* ── Grids ── */
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+.g4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; }
+
+/* ── Badge ── */
+.badge {
+  display: inline-flex; align-items: center;
+  padding: 2px 10px; border-radius: 20px;
+  font-size: 11px; font-weight: 600; letter-spacing: 0.03em;
+}
+.b-blue   { background: var(--primary-lighter); color: var(--primary-dark); }
+.b-amber  { background: var(--accent-light);    color: #92400e; }
+.b-green  { background: var(--green-light);     color: #14532d; }
+.b-red    { background: var(--red-light);       color: #9b1c1c; }
+.b-orange { background: var(--orange-light);    color: #7c2d12; }
+.b-gray   { background: var(--surface-2);       color: var(--text-3); border: 1px solid var(--border); }
+
+/* ── Bullet List ── */
+.ul { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+.ul li { display: flex; gap: 8px; font-size: 12.5px; color: var(--text-2); line-height: 1.55; }
+.ul li::before { content: '▸'; color: var(--primary); flex-shrink: 0; font-size: 11px; margin-top: 2px; }
+
+/* ── Table ── */
+.tbl { width: 100%; border-collapse: collapse; font-size: 12px; }
+.tbl th { padding: 7px 10px; text-align: left; background: var(--surface-2);
+          color: var(--text-3); font-size: 10px; font-weight: 700; text-transform: uppercase;
+          letter-spacing: 0.08em; border-bottom: 1.5px solid var(--border); }
+.tbl td { padding: 7px 10px; color: var(--text-2); border-bottom: 1px solid var(--border); vertical-align: middle; }
+.tbl tr:last-child td { border-bottom: none; }
+.tbl tr:hover td { background: var(--surface-2); }
+.tbl th:first-child, .tbl td:first-child { border-radius: 0; }
+
+/* ── Method Tags ── */
+.m { display: inline-block; padding: 1px 7px; border-radius: 4px;
+     font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; }
+.m-get    { background: #dcfce7; color: #14532d; }
+.m-post   { background: var(--primary-lighter); color: var(--primary-dark); }
+.m-put    { background: #fef3c7; color: #78350f; }
+.m-patch  { background: #ffede5; color: #7c2d12; }
+.m-delete { background: #ffedec; color: #7f1d1d; }
+
+/* ── Code Block ── */
+.code {
+  background: #1e293b; color: #e2e8f0; border-radius: 10px;
+  padding: 14px 16px; font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; line-height: 1.85; overflow: hidden;
+  border: 1px solid #334155;
+}
+.kw  { color: #93c5fd; }
+.str { color: #86efac; }
+.cmt { color: #64748b; font-style: italic; }
+.fn  { color: #fbbf24; }
+.num { color: #f9a8d4; }
+
+/* ── Divider ── */
+.hr { height: 1px; background: var(--border); }
+
+/* ── Tag Row ── */
+.tag-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.tag {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: var(--surface-2); border: 1.5px solid var(--border);
+  border-radius: 8px; padding: 5px 12px;
+  font-size: 12px; font-weight: 500; color: var(--text-2);
+}
+
+/* ── Flow Arrow ── */
+.arrow { color: var(--text-4); font-size: 14px; display: flex; align-items: center; justify-content: center; }
+
+/* ── Step Number ── */
+.step-num {
+  width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+  background: var(--primary); color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700;
+}
+
+/* ── Cover Slide ── */
+.cover-slide {
+  background: linear-gradient(140deg, #011354 0%, #1c2b69 45%, #2d4090 80%, #3d5299 100%) !important;
+}
+
+/* ── Explain Box ── */
+.explain {
+  background: var(--primary-lighter); border: 1.5px solid var(--primary-light);
+  border-radius: 10px; padding: 12px 16px;
+  font-size: 12.5px; color: var(--primary-dark); line-height: 1.65;
+}
+.explain strong { color: var(--primary-dark); font-weight: 600; }
+
+/* ── Scrollable area ── */
+.scroll { overflow-y: auto; max-height: calc(100vh - 130px); padding-right: 2px; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
+
+/* ── Sprint Timeline ── */
+.sprint { display: flex; gap: 14px; align-items: flex-start; padding: 14px; border-radius: 10px; }
+.sprint-num { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+
+/* ── Actor Box ── */
+.actor-box {
+  border-radius: 12px; padding: 16px; border: 2px solid;
+  display: flex; flex-direction: column; gap: 10px;
+}
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+<div id="slide-counter"></div>
+<div id="nav-dots"></div>
+<button class="nav-btn" id="nav-prev">‹</button>
+<button class="nav-btn" id="nav-next">›</button>
+
+<div id="slides">
+
+<!-- ════════════════════════════════════
+     SLIDE 1 — COVER
+════════════════════════════════════ -->
+<div class="slide cover-slide active">
+  <div style="text-align:center;color:white;max-width:700px;margin:auto">
+    <div style="font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(251,191,36,0.9);font-weight:600;margin-bottom:14px">
+      JSD12 · Group Omega · Technical Presentation
+    </div>
+    <div style="font-size:58px;font-weight:700;line-height:1.1;margin-bottom:8px">
+      AAA <span style="color:#fbbf24">Omega</span>
+    </div>
+    <div style="font-size:18px;font-weight:300;color:rgba(255,255,255,0.65);margin-bottom:28px">
+      Solar Cell E-Commerce &amp; Service Platform
+    </div>
+    <div style="font-size:13px;color:rgba(255,255,255,0.45);margin-bottom:24px;line-height:1.8;font-weight:300">
+      ระบบ E-Commerce สำหรับขายแผงโซลาร์เซลล์<br>และบริการติดตั้ง / ล้าง / บำรุงรักษา
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
+      <span style="padding:7px 18px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:20px;font-size:12.5px;color:rgba(255,255,255,0.8)">⚛ React 19</span>
+      <span style="padding:7px 18px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:20px;font-size:12.5px;color:rgba(255,255,255,0.8)">🟩 Node.js + Express 5</span>
+      <span style="padding:7px 18px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:20px;font-size:12.5px;color:rgba(255,255,255,0.8)">🍃 MongoDB</span>
+      <span style="padding:7px 18px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:20px;font-size:12.5px;color:rgba(255,255,255,0.8)">▲ Vite + Tailwind CSS 4</span>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     SLIDE 2 — SCRUM AGILE
+════════════════════════════════════ -->
+<div class="slide">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <div class="label-row">
+        <span class="label-num">01</span>
+        <span class="label-tag">Scrum Agile Planning</span>
+      </div>
+      <div class="slide-title">วางแผนพัฒนาแบบ Scrum</div>
+      <div class="slide-desc">แบ่งงานออกเป็น Sprint สั้นๆ แต่ละ Sprint มีเป้าหมายชัดเจน ทำให้ทีมโฟกัสและส่งมอบงานได้ต่อเนื่อง</div>
+    </div>
+
+    <div class="explain">
+      <strong>Scrum คืออะไร?</strong> คือวิธีบริหารโปรเจกต์แบบ Agile ที่แบ่งงานใหญ่ออกเป็น "Sprint" สั้นๆ แต่ละ Sprint มี Backlog (รายการงาน) และเป้าหมายที่ชัดเจน ทีมรีวิวงานหลังแต่ละ Sprint และปรับแผนได้ทันที
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <!-- Sprint 1 -->
+      <div class="sprint card-blue">
+        <div class="sprint-num" style="background:#7f8dd1;color:white">1</div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+            <span class="badge b-blue">Sprint 1</span>
+            <span style="font-size:12px;color:var(--text-3)">Business Planning + UI Prototype</span>
+          </div>
+          <div class="g2" style="gap:8px">
+            <ul class="ul">
+              <li>ออกแบบ Business Model Canvas</li>
+              <li>วาด Use Case Diagram และ ER Diagram</li>
+            </ul>
+            <ul class="ul">
+              <li>สร้าง HTML/CSS Prototype ทุกหน้า</li>
+              <li>กำหนดโครงสร้าง MongoDB เบื้องต้น</li>
+            </ul>
+          </div>
+        </div>
+        <span class="badge b-blue" style="align-self:flex-start">ผลลัพธ์: UI Mockup ครบทุกหน้า</span>
+      </div>
+      <!-- Sprint 2 -->
+      <div class="sprint card-green">
+        <div class="sprint-num" style="background:#40a448;color:white">2</div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+            <span class="badge b-green">Sprint 2</span>
+            <span style="font-size:12px;color:var(--text-3)">Frontend React SPA</span>
+          </div>
+          <div class="g2" style="gap:8px">
+            <ul class="ul">
+              <li>Setup React 19 + Vite 8 + Tailwind CSS 4</li>
+              <li>แปลง HTML → React Components</li>
+            </ul>
+            <ul class="ul">
+              <li>ตั้งค่า Router ทุกหน้า (Customer + Admin)</li>
+              <li>สร้าง Context API สำหรับ Auth และ Cart</li>
+            </ul>
+          </div>
+        </div>
+        <span class="badge b-green" style="align-self:flex-start">ผลลัพธ์: React App ครบทุกหน้า</span>
+      </div>
+      <!-- Sprint 3 -->
+      <div class="sprint card-amber">
+        <div class="sprint-num" style="background:#f59e0b;color:white">3</div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+            <span class="badge b-amber">Sprint 3</span>
+            <span style="font-size:12px;color:var(--text-3)">Backend REST API</span>
+          </div>
+          <div class="g2" style="gap:8px">
+            <ul class="ul">
+              <li>สร้าง Express 5 + Mongoose Schema</li>
+              <li>ระบบ Login ด้วย JWT (HttpOnly Cookie)</li>
+            </ul>
+            <ul class="ul">
+              <li>API ครบ 5 Resource (Users/Products/Orders/Services/Carts)</li>
+              <li>เชื่อมต่อ Cloudinary สำหรับรูปภาพ</li>
+            </ul>
+          </div>
+        </div>
+        <span class="badge b-amber" style="align-self:flex-start">ผลลัพธ์: REST API พร้อมใช้งาน</span>
+      </div>
+    </div>
+
+    <!-- User Stories -->
+    <div class="g3" style="gap:10px">
+      <div class="card card-gray" style="padding:12px">
+        <div class="card-label">👤 Customer</div>
+        <div class="card-body">ดูสินค้า · เพิ่มตะกร้า · Checkout · จองบริการ · ดูประวัติ</div>
+      </div>
+      <div class="card card-gray" style="padding:12px">
+        <div class="card-label">👔 Staff</div>
+        <div class="card-body">ดูรายการออเดอร์ · ดูข้อมูลลูกค้า · ดูตารางนัดหมาย</div>
+      </div>
+      <div class="card card-gray" style="padding:12px">
+        <div class="card-label">⚡ Admin</div>
+        <div class="card-body">จัดการสินค้า · ออเดอร์ · บริการ · ผู้ใช้ · เปลี่ยน Role</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     SLIDE 3 — BUSINESS MODEL CANVAS
+════════════════════════════════════ -->
+<div class="slide">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <div class="label-row">
+        <span class="label-num">02</span>
+        <span class="label-tag">Business Model Canvas</span>
+      </div>
+      <div class="slide-title">โมเดลธุรกิจโซลาร์เซลล์</div>
+      <div class="slide-desc">Business Model Canvas คือเครื่องมือวางแผนธุรกิจที่สรุปว่า "ทำอะไร ให้ใคร และหาเงินยังไง" บนกระดาษเดียว</div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1.6fr 1fr;gap:10px;align-items:start">
+      <!-- Left -->
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div class="card card-blue" style="padding:14px">
+          <div class="card-label">🤝 Key Partners</div>
+          <div class="card-title">พันธมิตรหลัก</div>
+          <ul class="ul">
+            <li>ผู้ผลิตแผงโซลาร์เซลล์</li>
+            <li>ทีมช่างติดตั้ง</li>
+            <li>Payment Gateway</li>
+          </ul>
+        </div>
+        <div class="card" style="padding:14px">
+          <div class="card-label">⚙ Key Activities</div>
+          <div class="card-title">กิจกรรมหลัก</div>
+          <ul class="ul">
+            <li>จำหน่ายสินค้า Online</li>
+            <li>บริการติดตั้ง / ล้าง / บำรุง</li>
+            <li>จัดการ Order &amp; Schedule</li>
+          </ul>
+        </div>
+        <div class="card" style="padding:14px">
+          <div class="card-label">🏗 Key Resources</div>
+          <div class="card-title">ทรัพยากรหลัก</div>
+          <ul class="ul">
+            <li>ระบบ E-Commerce</li>
+            <li>ทีมช่างบริการ</li>
+            <li>สต็อกสินค้า</li>
+          </ul>
+        </div>
+      </div>
+      <!-- Center -->
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div class="card card-blue" style="padding:16px;border-color:#7f8dd1;border-width:2px">
+          <div class="card-label" style="color:var(--primary-dark);font-size:11px">💎 Value Propositions — คุณค่าที่มอบให้ลูกค้า</div>
+          <ul class="ul" style="gap:8px">
+            <li><strong style="color:var(--text-1)">ครบจบที่เดียว</strong> — ซื้อสินค้า + จองบริการในระบบเดียว</li>
+            <li><strong style="color:var(--text-1)">จองออนไลน์ตลอด 24 ชม.</strong> — ไม่ต้องโทรหาร้าน</li>
+            <li><strong style="color:var(--text-1)">ติดตามสถานะ Real-time</strong> — รู้ว่าออเดอร์/นัดหมายอยู่ที่ขั้นตอนไหน</li>
+          </ul>
+        </div>
+        <div class="g2" style="gap:10px">
+          <div class="card card-red" style="padding:14px">
+            <div class="card-label" style="color:#9b1c1c">💸 Cost Structure</div>
+            <div class="card-title" style="font-size:12px">รายจ่าย</div>
+            <ul class="ul" style="font-size:11.5px">
+              <li>ต้นทุนสินค้า (COGS)</li>
+              <li>ค่าแรงทีมช่าง</li>
+              <li>ค่า Cloud Hosting</li>
+            </ul>
+          </div>
+          <div class="card card-green" style="padding:14px">
+            <div class="card-label" style="color:#14532d">📈 Revenue Streams</div>
+            <div class="card-title" style="font-size:12px">รายรับ</div>
+            <ul class="ul" style="font-size:11.5px">
+              <li>ขายสินค้าโซลาร์</li>
+              <li>ค่าบริการติดตั้ง</li>
+              <li>ค่าบริการล้าง/บำรุง</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!-- Right -->
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div class="card" style="padding:14px">
+          <div class="card-label">👥 Customer Segments</div>
+          <div class="card-title">กลุ่มลูกค้า</div>
+          <div style="display:flex;flex-direction:column;gap:6px;margin-top:4px">
+            <span class="badge b-blue" style="justify-content:center">Customer — ลูกค้าทั่วไป</span>
+            <span class="badge b-amber" style="justify-content:center">Staff — พนักงานร้าน</span>
+            <span class="badge b-green" style="justify-content:center">Admin — ผู้ดูแลระบบ</span>
+          </div>
+        </div>
+        <div class="card card-amber" style="padding:14px">
+          <div class="card-label">📡 Channels</div>
+          <div class="card-title">ช่องทาง</div>
+          <ul class="ul">
+            <li>เว็บไซต์ E-Commerce</li>
+            <li>Admin Dashboard</li>
+          </ul>
+        </div>
+        <div class="card" style="padding:14px">
+          <div class="card-label">❤ Customer Relations</div>
+          <div class="card-title">ความสัมพันธ์</div>
+          <ul class="ul">
+            <li>ติดตามออเดอร์ Online</li>
+            <li>ดูประวัติบริการ</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     SLIDE 4 — USE CASE DIAGRAM
+════════════════════════════════════ -->
+<div class="slide">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <div class="label-row">
+        <span class="label-num">03</span>
+        <span class="label-tag">Use Case Diagram</span>
+      </div>
+      <div class="slide-title">ใครทำอะไรในระบบได้บ้าง?</div>
+      <div class="slide-desc">Use Case Diagram แสดงว่าผู้ใช้แต่ละประเภท (Actor) สามารถทำอะไรในระบบได้บ้าง ช่วยให้ทีมเห็นภาพรวมของฟีเจอร์ทั้งหมด</div>
+    </div>
+
+    <div class="explain">
+      <strong>วิธีอ่าน Diagram:</strong> แต่ละกล่องคือ "Actor" (ผู้ใช้งาน) บรรทัดด้านล่างคือ Use Case (สิ่งที่ทำได้) Admin จะมีสิทธิ์มากที่สุด รองลงมาคือ Staff และ Customer ตามลำดับ
+    </div>
+
+    <div class="g3">
+      <!-- Customer -->
+      <div class="actor-box" style="background:#f0efff;border-color:#7f8dd1">
+        <div style="text-align:center">
+          <div style="width:52px;height:52px;border-radius:50%;background:#dde1ff;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:24px;border:2px solid #7f8dd1">👤</div>
+          <span class="badge b-blue" style="font-size:12px">Customer</span>
+          <div style="font-size:11px;color:var(--text-3);margin-top:4px">ลูกค้าทั่วไป</div>
+        </div>
+        <div class="hr"></div>
+        <ul class="ul">
+          <li>สมัครสมาชิก / เข้าสู่ระบบ</li>
+          <li>ดูและค้นหาสินค้า</li>
+          <li>เพิ่ม / แก้ / ลบสินค้าในตะกร้า</li>
+          <li>กรอกที่อยู่ + ชำระเงิน</li>
+          <li>จองบริการช่าง</li>
+          <li>ดูประวัติออเดอร์</li>
+          <li>แก้ไขข้อมูลส่วนตัว</li>
+        </ul>
+      </div>
+      <!-- Staff -->
+      <div class="actor-box" style="background:#fffbeb;border-color:#f59e0b">
+        <div style="text-align:center">
+          <div style="width:52px;height:52px;border-radius:50%;background:#fef3c7;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:24px;border:2px solid #f59e0b">👔</div>
+          <span class="badge b-amber" style="font-size:12px">Staff</span>
+          <div style="font-size:11px;color:var(--text-3);margin-top:4px">พนักงาน</div>
+        </div>
+        <div class="hr"></div>
+        <div style="font-size:11.5px;color:var(--text-3);margin-bottom:8px;font-style:italic">+ ทุกอย่างของ Customer และ...</div>
+        <ul class="ul">
+          <li>ดูรายการออเดอร์ทั้งหมด</li>
+          <li>ดูข้อมูลลูกค้าในระบบ</li>
+          <li>ดูตารางนัดหมายบริการ</li>
+        </ul>
+      </div>
+      <!-- Admin -->
+      <div class="actor-box" style="background:#dcfce7;border-color:#40a448">
+        <div style="text-align:center">
+          <div style="width:52px;height:52px;border-radius:50%;background:#bbf7d0;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:24px;border:2px solid #40a448">⚡</div>
+          <span class="badge b-green" style="font-size:12px">Admin</span>
+          <div style="font-size:11px;color:var(--text-3);margin-top:4px">ผู้ดูแลระบบ</div>
+        </div>
+        <div class="hr"></div>
+        <div style="font-size:11.5px;color:var(--text-3);margin-bottom:8px;font-style:italic">+ ทุกอย่างของ Staff และ...</div>
+        <ul class="ul">
+          <li>เพิ่ม / แก้ไข / ลบสินค้า</li>
+          <li>อัปเดตสถานะออเดอร์</li>
+          <li>จัดการนัดหมายบริการ</li>
+          <li>จัดการบัญชีผู้ใช้ทั้งหมด</li>
+          <li><strong style="color:var(--text-1)">เปลี่ยน Role ผู้ใช้ได้</strong></li>
+          <li>ดู Dashboard สถิติยอดขาย</li>
+        </ul>
+      </div>
+    </div>
+
+    <div style="border:1.5px dashed var(--border-2);border-radius:10px;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;background:var(--surface)">
+      <span style="font-size:11px;color:var(--text-4);font-style:italic">«System Boundary» — ขอบเขตของระบบ AAA Omega</span>
+      <div class="tag-row">
+        <span class="tag">🛍 E-Commerce</span>
+        <span class="tag">🔧 Service Booking</span>
+        <span class="tag">📊 Admin Dashboard</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     SLIDE 5 — ER DIAGRAM
+════════════════════════════════════ -->
+<div class="slide">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <div class="label-row">
+        <span class="label-num">04</span>
+        <span class="label-tag">ER Diagram</span>
+      </div>
+      <div class="slide-title">ข้อมูลในระบบมีอะไรบ้าง และเชื่อมกันยังไง?</div>
+      <div class="slide-desc">ER Diagram (Entity Relationship) แสดงโครงสร้างข้อมูลทั้งหมดในฐานข้อมูล ว่าแต่ละตาราง (Collection) มีข้อมูลอะไร และสัมพันธ์กันอย่างไร</div>
+    </div>
+
+    <div class="explain">
+      <strong>วิธีอ่าน:</strong> แต่ละกล่องคือ 1 Collection ใน MongoDB · เส้นเชื่อมแสดงความสัมพันธ์ (1 User มีได้ 1 Cart / 1 User มีได้หลาย Order) · ข้อมูลที่ขีดเส้นใต้คือ Primary Key (ตัวระบุที่ไม่ซ้ำกัน)
+    </div>
+
+    <div class="g2">
+      <!-- Left col -->
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div class="card card-blue" style="padding:14px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <span style="font-weight:700;font-size:14px;color:var(--primary-dark)">USER</span>
+            <span class="badge b-blue" style="font-size:10px">1 User = 1 Cart · 1:N Order</span>
+          </div>
+          <div style="font-size:11.5px;color:var(--text-2);line-height:2;font-family:'JetBrains Mono',monospace">
+            <u>userNumber</u> · firstName · lastName<br>
+            email (unique) · password (bcrypt)<br>
+            role: customer | staff | admin<br>
+            address · shippingAddress · serviceAddress
+          </div>
+        </div>
+        <div class="card" style="padding:14px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <span style="font-weight:700;font-size:14px;color:#92400e">PRODUCT</span>
+            <span class="badge b-amber" style="font-size:10px">snapshot ราคาใน Order</span>
+          </div>
+          <div style="font-size:11.5px;color:var(--text-2);line-height:2;font-family:'JetBrains Mono',monospace">
+            <u>productNumber</u> · name<br>
+            sku (unique) · brand · category<br>
+            price · salePrice · stock<br>
+            specs[] · image{} · gallery[]
+          </div>
+        </div>
+      </div>
+      <!-- Right col -->
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div class="card card-green" style="padding:14px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <span style="font-weight:700;font-size:14px;color:#14532d">ORDER</span>
+            <span class="badge b-green" style="font-size:10px">status 6 ขั้น</span>
+          </div>
+          <div style="font-size:11.5px;color:var(--text-2);line-height:2;font-family:'JetBrains Mono',monospace">
+            <u>orderNumber</u>: "ord20250001"<br>
+            open→paid→preparing→shipping<br>→delivered | cancelled<br>
+            items[]: บันทึกราคา ณ วันสั่ง
+          </div>
+        </div>
+        <div class="card card-orange" style="padding:14px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <span style="font-weight:700;font-size:14px;color:#7c2d12">SERVICE</span>
+            <span class="badge b-orange" style="font-size:10px">นัดหมายบริการ</span>
+          </div>
+          <div style="font-size:11.5px;color:var(--text-2);line-height:2;font-family:'JetBrains Mono',monospace">
+            <u>serviceNumber</u>: "sv20250001"<br>
+            install | clean | maintenance<br>
+            request_received→scheduled<br>→in_progress→completed
+          </div>
+        </div>
+        <div class="g2" style="gap:10px">
+          <div class="card" style="padding:12px">
+            <span style="font-weight:700;font-size:12px;color:var(--primary-dark)">CART</span>
+            <div style="font-size:11px;color:var(--text-2);margin-top:4px;font-family:'JetBrains Mono',monospace;line-height:1.8">userNumber (unique)<br>items[] — productNumber + qty</div>
+          </div>
+          <div class="card card-gray" style="padding:12px;border-style:dashed">
+            <span style="font-weight:700;font-size:12px;color:var(--text-3)">COUNTER</span>
+            <div style="font-size:11px;color:var(--text-3);margin-top:4px;font-family:'JetBrains Mono',monospace;line-height:1.8">_id: "user", "product"<br>seq: ตัวเลขที่นับต่อเนื่อง</div>
+            <div style="font-size:10px;color:var(--text-4);margin-top:4px">ใช้สร้าง ID อัตโนมัติ</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     SLIDE 6 — SYSTEM DESIGN
+════════════════════════════════════ -->
+<div class="slide">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <div class="label-row">
+        <span class="label-num">05</span>
+        <span class="label-tag">System Design Diagram</span>
+      </div>
+      <div class="slide-title">ระบบทำงานยังไง? เชื่อมต่อกันยังไง?</div>
+      <div class="slide-desc">System Design แสดงภาพรวมของ Infrastructure ทั้งหมด ตั้งแต่ Browser ของผู้ใช้ ไปจนถึง Database และ Services ต่างๆ</div>
+    </div>
+
+    <!-- Architecture boxes -->
+    <div style="display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:8px;align-items:center">
+      <div class="card card-blue" style="padding:16px;text-align:center">
+        <div style="font-size:28px;margin-bottom:6px">🌐</div>
+        <div style="font-weight:700;color:var(--text-1);font-size:14px;margin-bottom:4px">Frontend</div>
+        <div style="font-size:11.5px;color:var(--text-3);line-height:1.8">React 19 + Vite 8<br>Tailwind CSS 4<br>React Router DOM 7</div>
+        <div style="margin-top:8px"><span class="badge b-blue">Deploy: Vercel</span></div>
+      </div>
+      <div style="text-align:center;padding:0 4px">
+        <div style="font-size:20px;color:var(--primary)">⇄</div>
+        <div style="font-size:10px;color:var(--text-4);margin-top:4px;line-height:1.5">REST API<br>JSON + Cookie</div>
+      </div>
+      <div class="card card-green" style="padding:16px;text-align:center">
+        <div style="font-size:28px;margin-bottom:6px">⚙</div>
+        <div style="font-weight:700;color:var(--text-1);font-size:14px;margin-bottom:4px">Backend</div>
+        <div style="font-size:11.5px;color:var(--text-3);line-height:1.8">Express 5 + Node.js ESM<br>JWT (HttpOnly Cookie)<br>bcrypt + Helmet + CORS</div>
+        <div style="margin-top:8px"><span class="badge b-green">Deploy: Railway</span></div>
+      </div>
+      <div style="text-align:center;padding:0 4px">
+        <div style="font-size:20px;color:var(--text-4)">→</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div class="card card-green" style="padding:12px;text-align:center">
+          <div style="font-size:20px">🍃</div>
+          <div style="font-weight:600;font-size:12px;color:var(--text-1)">MongoDB Atlas</div>
+          <div style="font-size:11px;color:var(--text-3)">6 Collections</div>
+        </div>
+        <div class="card card-blue" style="padding:12px;text-align:center">
+          <div style="font-size:20px">☁</div>
+          <div style="font-weight:600;font-size:12px;color:var(--text-1)">Cloudinary</div>
+          <div style="font-size:11px;color:var(--text-3)">Image Storage</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Middleware stack -->
+    <div class="card" style="padding:14px">
+      <div style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:10px">Middleware Stack — ทุก Request ต้องผ่านชั้นเหล่านี้ตามลำดับ</div>
+      <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+        <div style="background:var(--red-light);border:1px solid #fca5a5;border-radius:8px;padding:7px 12px;text-align:center">
+          <div style="font-size:11px;font-weight:600;color:#7f1d1d">Helmet</div>
+          <div style="font-size:10px;color:var(--text-3)">Security Headers</div>
+        </div>
+        <div class="arrow">→</div>
+        <div style="background:var(--orange-light);border:1px solid #fed7aa;border-radius:8px;padding:7px 12px;text-align:center">
+          <div style="font-size:11px;font-weight:600;color:#7c2d12">CORS</div>
+          <div style="font-size:10px;color:var(--text-3)">เฉพาะ URL ที่อนุญาต</div>
+        </div>
+        <div class="arrow">→</div>
+        <div style="background:#fef3c7;border:1px solid #fde68a;border-radius:8px;padding:7px 12px;text-align:center">
+          <div style="font-size:11px;font-weight:600;color:#78350f">Rate Limit</div>
+          <div style="font-size:10px;color:var(--text-3)">100 req / 15 นาที</div>
+        </div>
+        <div class="arrow">→</div>
+        <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:7px 12px;text-align:center">
+          <div style="font-size:11px;font-weight:600;color:var(--text-2)">JSON + Cookie</div>
+          <div style="font-size:10px;color:var(--text-3)">Parse Request</div>
+        </div>
+        <div class="arrow">→</div>
+        <div style="background:var(--primary-lighter);border:1px solid var(--primary-light);border-radius:8px;padding:7px 12px;text-align:center">
+          <div style="font-size:11px;font-weight:600;color:var(--primary-dark)">Authenticate</div>
+          <div style="font-size:10px;color:var(--text-3)">ตรวจ JWT จาก Cookie</div>
+        </div>
+        <div class="arrow">→</div>
+        <div style="background:var(--green-light);border:1px solid #bbf7d0;border-radius:8px;padding:7px 12px;text-align:center">
+          <div style="font-size:11px;font-weight:600;color:#14532d">Authorize</div>
+          <div style="font-size:10px;color:var(--text-3)">ตรวจ Role จาก DB</div>
+        </div>
+        <div class="arrow">→</div>
+        <div style="background:#fffbeb;border:1.5px solid #f59e0b;border-radius:8px;padding:7px 12px;text-align:center">
+          <div style="font-size:11px;font-weight:600;color:#78350f">Controller</div>
+          <div style="font-size:10px;color:var(--text-3)">Business Logic</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JWT Flow -->
+    <div class="card card-blue" style="padding:13px">
+      <div style="font-size:11px;font-weight:700;color:var(--primary-dark);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">JWT Auth Flow — วิธีที่ระบบจำได้ว่าคุณ login แล้ว</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div style="display:flex;align-items:flex-start;gap:8px">
+          <div class="step-num" style="background:var(--primary)">1</div>
+          <div style="font-size:12px;color:var(--text-2);line-height:1.6">
+            <strong>Login:</strong> ส่ง email + password → Server ตรวจ → สร้าง JWT Token → เก็บไว้ใน <strong>HttpOnly Cookie</strong> (JavaScript อ่านไม่ได้ = ปลอดภัย)
+          </div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:8px">
+          <div class="step-num" style="background:var(--primary)">2</div>
+          <div style="font-size:12px;color:var(--text-2);line-height:1.6">
+            <strong>ทุก Request:</strong> Browser แนบ Cookie ให้อัตโนมัติ → Server ถอดรหัส JWT → รู้ว่าใคร Login → ดึงข้อมูลจาก DB → ตอบกลับ
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     SLIDE 7 — REACT COMPONENTS
+════════════════════════════════════ -->
+<div class="slide">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <div class="label-row">
+        <span class="label-num">06</span>
+        <span class="label-tag">React Components Diagram</span>
+      </div>
+      <div class="slide-title">โครงสร้าง Component และการแบ่งหน้าที่</div>
+      <div class="slide-desc">React แบ่ง UI ออกเป็น "Component" ย่อยๆ แต่ละชิ้นทำหน้าที่เดียว นำมาประกอบกันเป็นหน้าใหญ่ได้ ทำให้แก้ไขง่ายและนำกลับมาใช้ซ้ำได้</div>
+    </div>
+
+    <!-- Provider Tree -->
+    <div class="card card-blue" style="padding:14px">
+      <div class="card-label" style="margin-bottom:10px">Context Provider Tree — State ส่วนกลางที่ทุก Component เข้าถึงได้</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;align-items:center">
+        <div style="text-align:center;padding:10px;background:var(--primary-light);border-radius:8px;border:1.5px solid var(--primary)">
+          <div style="font-size:11px;font-weight:700;color:var(--primary-dark)">AdminAuthProvider</div>
+          <div style="font-size:10px;color:var(--text-3);margin-top:3px">Admin login state</div>
+        </div>
+        <div style="text-align:center;padding:10px;background:#d1fae5;border-radius:8px;border:1.5px solid #40a448">
+          <div style="font-size:11px;font-weight:700;color:#14532d">AuthProvider</div>
+          <div style="font-size:10px;color:var(--text-3);margin-top:3px">Customer login state</div>
+        </div>
+        <div style="text-align:center;padding:10px;background:#fef3c7;border-radius:8px;border:1.5px solid #f59e0b">
+          <div style="font-size:11px;font-weight:700;color:#78350f">MessageProvider</div>
+          <div style="font-size:10px;color:var(--text-3);margin-top:3px">Admin data (products, orders...)</div>
+        </div>
+        <div style="text-align:center;padding:10px;background:#ffede5;border-radius:8px;border:1.5px solid #e96c0a">
+          <div style="font-size:11px;font-weight:700;color:#7c2d12">CartProvider</div>
+          <div style="font-size:10px;color:var(--text-3);margin-top:3px">Cart state</div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:6px;font-size:11px;color:var(--text-4)">↑ ครอบ &lt;App /&gt; ทำให้ทุกหน้าเข้าถึง State เหล่านี้ได้</div>
+    </div>
+
+    <div class="g2">
+      <!-- Customer Components -->
+      <div class="card" style="padding:14px">
+        <div class="card-label">⚛ Customer Pages</div>
+        <div style="font-size:12px;color:var(--text-2);line-height:2;font-family:'JetBrains Mono',monospace;background:var(--surface-2);border-radius:8px;padding:10px;margin-top:6px">
+          <span style="color:var(--primary)">HomePage</span> → Hero + Products + Calculator + FAQ<br>
+          <span style="color:var(--primary)">AllProductsPage</span> → Filter + ProductCard×N<br>
+          <span style="color:var(--primary)">CartPage</span> → CartItem×N + OrderSummary<br>
+          <span style="color:var(--primary)">CheckoutPage</span> → AddressForm + ShippingOption<br>
+          <span style="color:var(--primary)">PaymentPage</span> → PaymentOption + ModalConfirm
+        </div>
+        <div style="margin-top:10px;font-size:12px;color:var(--text-3);line-height:1.6">
+          💡 แต่ละหน้าถูกแปลงมาจาก HTML prototype ใน Sprint 1 โดยแยก Logic ออกจาก UI
+        </div>
+      </div>
+      <!-- Admin Components -->
+      <div class="card" style="padding:14px">
+        <div class="card-label">🔒 Admin Pages (Protected Route)</div>
+        <div style="font-size:12px;color:var(--text-2);line-height:2;font-family:'JetBrains Mono',monospace;background:var(--surface-2);border-radius:8px;padding:10px;margin-top:6px">
+          <span style="color:var(--green)">AdminLayout</span> → Header + Sidebar + &lt;Outlet&gt;<br>
+          <span style="color:var(--green)">AdminHome</span> → StatCard×6 + Order/Service Tables<br>
+          <span style="color:var(--green)">AdminProducts</span> → List + ProductForm (CRUD)<br>
+          <span style="color:var(--green)">AdminOrders</span> → List + OrderItem + StatusSelect<br>
+          <span style="color:var(--green)">AdminUsers</span> → List + UserDetail + UserForm
+        </div>
+        <div style="margin-top:10px;font-size:12px;color:var(--text-3);line-height:1.6">
+          💡 ทุกหน้า Admin ถูกป้องกันด้วย <strong>AdminProtectedRoute</strong> — ถ้าไม่ได้ login จะถูก redirect ออก
+        </div>
+      </div>
+    </div>
+
+    <!-- Data Flow Summary -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+      <div class="card card-blue" style="padding:10px;text-align:center">
+        <div style="font-size:10px;font-weight:700;color:var(--primary-dark);margin-bottom:3px">AuthProvider</div>
+        <div style="font-size:10px;color:var(--text-3)">login · logout · register<br>updateProfile</div>
+      </div>
+      <div class="card card-orange" style="padding:10px;text-align:center">
+        <div style="font-size:10px;font-weight:700;color:#7c2d12;margin-bottom:3px">CartProvider</div>
+        <div style="font-size:10px;color:var(--text-3)">addToCart · updateQty<br>removeFromCart</div>
+      </div>
+      <div class="card card-amber" style="padding:10px;text-align:center">
+        <div style="font-size:10px;font-weight:700;color:#78350f;margin-bottom:3px">MessageProvider</div>
+        <div style="font-size:10px;color:var(--text-3)">users · products<br>orders · services</div>
+      </div>
+      <div class="card card-green" style="padding:10px;text-align:center">
+        <div style="font-size:10px;font-weight:700;color:#14532d;margin-bottom:3px">AdminAuthProvider</div>
+        <div style="font-size:10px;color:var(--text-3)">admin login<br>isAuthenticated</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     SLIDE 8 — API SPEC
+════════════════════════════════════ -->
+<div class="slide">
+  <div class="slide-inner scroll">
+    <div class="slide-header">
+      <div class="label-row">
+        <span class="label-num">07</span>
+        <span class="label-tag">API Spec</span>
+      </div>
+      <div class="slide-title">API คืออะไร และมี Endpoint อะไรบ้าง?</div>
+      <div class="slide-desc">API (Application Programming Interface) คือ "ประตู" ที่ Frontend ใช้คุยกับ Backend ทุกการกระทำ (ดูสินค้า / สั่งซื้อ / login) ล้วนผ่าน API ทั้งสิ้น</div>
+    </div>
+
+    <div class="explain">
+      <strong>วิธีอ่านตาราง:</strong> Method คือประเภทคำขอ (GET=ดูข้อมูล / POST=สร้างใหม่ / PUT=แก้ทั้งหมด / PATCH=แก้บางส่วน / DELETE=ลบ) · Auth ✓ หมายความว่าต้อง Login ก่อน · Role คือสิทธิ์ที่ต้องมี
+    </div>
+
+    <div class="g2">
+      <!-- Users -->
+      <div class="card" style="padding:14px">
+        <div class="card-label">👤 Users — /api/v1/users</div>
+        <table class="tbl">
+          <thead><tr><th>Method</th><th>Path</th><th>Auth / Role</th></tr></thead>
+          <tbody>
+            <tr><td><span class="m m-post">POST</span></td><td>/register</td><td style="color:var(--text-4)">สาธารณะ</td></tr>
+            <tr><td><span class="m m-post">POST</span></td><td>/login</td><td style="color:var(--text-4)">สาธารณะ</td></tr>
+            <tr><td><span class="m m-post">POST</span></td><td>/logout</td><td>✓ ผู้ใช้ที่ login</td></tr>
+            <tr><td><span class="m m-get">GET</span></td><td>/profile</td><td>✓ ตัวเอง</td></tr>
+            <tr><td><span class="m m-put">PUT</span></td><td>/profile</td><td>✓ แก้ข้อมูลตัวเอง</td></tr>
+            <tr><td><span class="m m-patch">PATCH</span></td><td>/profile/password</td><td>✓ เปลี่ยนรหัสผ่าน</td></tr>
+            <tr><td><span class="m m-get">GET</span></td><td>/</td><td>Staff | Admin</td></tr>
+            <tr><td><span class="m m-patch">PATCH</span></td><td>/:id/role</td><td>Admin เท่านั้น</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- Products + Carts -->
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div class="card" style="padding:14px">
+          <div class="card-label">📦 Products — /api/v1/products</div>
+          <table class="tbl">
+            <thead><tr><th>Method</th><th>Path</th><th>ทำอะไร</th></tr></thead>
+            <tbody>
+              <tr><td><span class="m m-get">GET</span></td><td>/</td><td>ดูสินค้าทั้งหมด</td></tr>
+              <tr><td><span class="m m-get">GET</span></td><td>/number/:n</td><td>ดูตาม productNumber</td></tr>
+              <tr><td><span class="m m-post">POST</span></td><td>/</td><td>เพิ่มสินค้าใหม่</td></tr>
+              <tr><td><span class="m m-put">PUT</span></td><td>/:id</td><td>แก้ไขสินค้า</td></tr>
+              <tr><td><span class="m m-delete">DELETE</span></td><td>/:id</td><td>ลบสินค้า</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card" style="padding:14px">
+          <div class="card-label">🛒 Carts — /api/v1/carts [ต้อง Login]</div>
+          <table class="tbl">
+            <thead><tr><th>Method</th><th>Path</th><th>ทำอะไร</th></tr></thead>
+            <tbody>
+              <tr><td><span class="m m-get">GET</span></td><td>/</td><td>ดูตะกร้า (พร้อมรายละเอียดสินค้า)</td></tr>
+              <tr><td><span class="m m-post">POST</span></td><td>/add</td><td>เพิ่มสินค้าลงตะกร้า</td></tr>
+              <tr><td><span class="m m-put">PUT</span></td><td>/update</td><td>แก้จำนวนสินค้า</td></tr>
+              <tr><td><span class="m m-delete">DELETE</span></td><td>/remove/:n</td><td>ลบสินค้าออกจากตะกร้า</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- Orders -->
+      <div class="card" style="padding:14px">
+        <div class="card-label">📋 Orders — /api/v1/orders</div>
+        <table class="tbl">
+          <thead><tr><th>Method</th><th>Path</th><th>ทำอะไร</th></tr></thead>
+          <tbody>
+            <tr><td><span class="m m-get">GET</span></td><td>/</td><td>ดูออเดอร์ทั้งหมด</td></tr>
+            <tr><td><span class="m m-get">GET</span></td><td>/number/:n</td><td>ดูตาม orderNumber</td></tr>
+            <tr><td><span class="m m-post">POST</span></td><td>/</td><td>สร้างออเดอร์ใหม่</td></tr>
+            <tr><td><span class="m m-patch">PATCH</span></td><td>/:id/status</td><td>อัปเดตสถานะ</td></tr>
+            <tr><td><span class="m m-patch">PATCH</span></td><td>/:id/internal-note</td><td>เพิ่มโน้ตสำหรับ Staff</td></tr>
+            <tr><td><span class="m m-delete">DELETE</span></td><td>/:id</td><td>ลบออเดอร์</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- Services + Response -->
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div class="card" style="padding:14px">
+          <div class="card-label">🔧 Services — /api/v1/services</div>
+          <table class="tbl">
+            <thead><tr><th>Method</th><th>Path</th><th>ทำอะไร</th></tr></thead>
+            <tbody>
+              <tr><td><span class="m m-get">GET</span></td><td>/</td><td>ดูการนัดหมายทั้งหมด</td></tr>
+              <tr><td><span class="m m-post">POST</span></td><td>/</td><td>จองบริการ/นัดหมาย</td></tr>
+              <tr><td><span class="m m-put">PUT</span></td><td>/:id</td><td>แก้ข้อมูลบริการ</td></tr>
+              <tr><td><span class="m m-patch">PATCH</span></td><td>/:id/status</td><td>อัปเดตสถานะ</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card card-blue" style="padding:14px">
+          <div class="card-label">📐 Response Format มาตรฐาน</div>
+          <div class="code" style="font-size:11px;padding:10px;margin-top:6px">
+<span class="cmt">// ✅ สำเร็จ</span><br>{ <span class="str">"success"</span>: <span class="num">true</span>,  <span class="str">"data"</span>: { ... } }<br><br>
+<span class="cmt">// ❌ ผิดพลาด</span><br>{ <span class="str">"success"</span>: <span class="num">false</span>, <span class="str">"error"</span>: <span class="str">"ข้อความ"</span> }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     SLIDE 9 — DATA SCHEMAS
+════════════════════════════════════ -->
+<div class="slide">
+  <div class="slide-inner scroll">
+    <div class="slide-header">
+      <div class="label-row">
+        <span class="label-num">08</span>
+        <span class="label-tag">Data Schemas / Models</span>
+      </div>
+      <div class="slide-title">วิธีเก็บข้อมูลใน MongoDB</div>
+      <div class="slide-desc">Schema คือ "แบบฟอร์ม" ที่กำหนดว่าข้อมูลแต่ละชนิดมีหน้าตาอย่างไร มี field อะไรบ้าง และมีกฎอะไรบ้าง ก่อนบันทึกลง MongoDB</div>
+    </div>
+
+    <div class="g2">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <!-- User -->
+        <div class="card card-blue" style="padding:14px">
+          <div class="card-label">USER Schema</div>
+          <div class="code" style="font-size:10.5px;margin-top:6px">
+<span class="kw">const</span> userSchema = {<br>
+&nbsp;&nbsp;userNumber: { unique, <span class="fn">immutable</span> }, <span class="cmt">// ← Auto-increment</span><br>
+&nbsp;&nbsp;email:      { unique, required },<br>
+&nbsp;&nbsp;password:   { select: <span class="num">false</span> },   <span class="cmt">// ← ซ่อนจาก query</span><br>
+&nbsp;&nbsp;role: <span class="str">"customer | staff | admin"</span>,<br>
+&nbsp;&nbsp;address / shippingAddress / serviceAddress<br>
+}
+          </div>
+          <div style="margin-top:8px;font-size:11.5px;color:var(--text-2);line-height:1.6;background:var(--primary-lighter);border-radius:6px;padding:8px">
+            💡 ก่อน save ระบบจะ <strong>auto-increment userNumber</strong> และ <strong>hash password</strong> ด้วย bcrypt โดยอัตโนมัติ
+          </div>
+        </div>
+        <!-- Product -->
+        <div class="card card-amber" style="padding:14px">
+          <div class="card-label">PRODUCT Schema</div>
+          <div class="code" style="font-size:10.5px;margin-top:6px">
+<span class="kw">const</span> productSchema = {<br>
+&nbsp;&nbsp;productNumber: { unique, <span class="fn">immutable</span> },<br>
+&nbsp;&nbsp;sku:           { unique, lowercase },<br>
+&nbsp;&nbsp;specs:         [{ label, value }], <span class="cmt">// สเปคสินค้า</span><br>
+&nbsp;&nbsp;image:         { url, cloudinaryId },<br>
+&nbsp;&nbsp;gallery:       [{ url, cloudinaryId }],<br>
+&nbsp;&nbsp;price, salePrice, stock, stockMin<br>
+}
+          </div>
+          <div style="margin-top:8px;font-size:11.5px;color:var(--text-2);line-height:1.6;background:#fffbeb;border-radius:6px;padding:8px">
+            💡 <strong>cloudinaryId</strong> ใช้สำหรับลบรูปจาก Cloudinary ได้ภายหลัง
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <!-- Order -->
+        <div class="card card-green" style="padding:14px">
+          <div class="card-label">ORDER Schema — Auto-generate Number</div>
+          <div class="code" style="font-size:10.5px;margin-top:6px">
+<span class="kw">const</span> orderSchema = {<br>
+&nbsp;&nbsp;orderNumber: { unique, <span class="fn">immutable</span> },<br>
+&nbsp;&nbsp;status: <span class="str">"open|paid|preparing|shipping|delivered|cancelled"</span>,<br>
+&nbsp;&nbsp;items: [{ productNumber, priceAtPurchase, qty }],<br>
+&nbsp;&nbsp;customer: { ...snapshot ข้อมูลลูกค้า }<br>
+}<br>
+<span class="cmt">// pre("save"): "ord" + ปี + padStart(4) → "ord20250001"</span>
+          </div>
+          <div style="margin-top:8px;font-size:11.5px;color:var(--text-2);line-height:1.6;background:var(--green-light);border-radius:6px;padding:8px">
+            💡 <strong>priceAtPurchase</strong> บันทึกราคา ณ วันสั่งซื้อ แม้ราคาสินค้าเปลี่ยนภายหลัง ยอดออเดอร์ก็ไม่เปลี่ยน
+          </div>
+        </div>
+        <!-- Counter Pattern -->
+        <div class="card" style="padding:14px;border-color:var(--primary);border-width:2px">
+          <div class="card-label">Counter Pattern — วิธีสร้าง ID อัตโนมัติ</div>
+          <div style="font-size:12px;color:var(--text-2);margin:8px 0;line-height:1.6;background:var(--surface-2);border-radius:6px;padding:8px">
+            MongoDB ไม่มี Auto-increment ในตัว — เราแก้ด้วยการสร้าง Collection ชื่อ <strong>Counter</strong> ที่เก็บตัวเลขล่าสุดของแต่ละ sequence
+          </div>
+          <div class="code" style="font-size:10.5px">
+<span class="cmt">// Counter: { _id: "user", seq: 42 }</span><br>
+<span class="kw">const</span> <span class="fn">getNextSequence</span> = <span class="kw">async</span>(name) => {<br>
+&nbsp;&nbsp;<span class="kw">return await</span> Counter.<span class="fn">findOneAndUpdate</span>(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{ _id: name },<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{ $inc: { seq: <span class="num">1</span> } }, <span class="cmt">// บวก 1</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;{ upsert: <span class="num">true</span>, returnDocument: <span class="str">"after"</span> }<br>
+&nbsp;&nbsp;);<br>
+};
+          </div>
+          <div style="margin-top:8px;font-size:11.5px;color:var(--text-2);background:var(--primary-lighter);border-radius:6px;padding:8px">
+            💡 เรียกใช้ใน <strong>pre("save")</strong> hook → ได้เลข userNumber/productNumber/orderNumber ที่ไม่ซ้ำกันเสมอ
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     SLIDE 10 — HOW TEAM USES AI
+════════════════════════════════════ -->
+<div class="slide">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <div class="label-row">
+        <span class="label-num">09</span>
+        <span class="label-tag">How the Team Uses AI</span>
+      </div>
+      <div class="slide-title">ทีมใช้ AI ในการเรียนและพัฒนา Software ยังไง?</div>
+      <div class="slide-desc">AI ไม่ใช่แค่เครื่องมือสร้างโค้ด แต่คือ "เพื่อน Pair Programmer" ที่ช่วยอธิบาย ช่วยคิด และช่วยตรวจสอบงาน</div>
+    </div>
+
+    <div class="g3">
+      <div class="card card-blue" style="padding:14px">
+        <div style="font-size:22px;margin-bottom:8px">🗺</div>
+        <div class="card-label">1. วางแผนและออกแบบระบบ</div>
+        <ul class="ul" style="margin-top:4px">
+          <li>ให้ AI แนะนำ Tech Stack ที่เหมาะกับ requirement</li>
+          <li>ออกแบบ Database Schema ก่อนเขียนโค้ด</li>
+          <li>สร้าง API Contract ล่วงหน้า</li>
+        </ul>
+      </div>
+      <div class="card card-green" style="padding:14px">
+        <div style="font-size:22px;margin-bottom:8px">📖</div>
+        <div class="card-label">2. เรียนรู้ Concept ผ่านโค้ดจริง</div>
+        <ul class="ul" style="margin-top:4px">
+          <li>ให้ AI อธิบาย HttpOnly Cookie vs localStorage</li>
+          <li>เรียน Mongoose Hooks และ Schema validation</li>
+          <li>เข้าใจ JWT Auth Flow ทีละขั้นตอน</li>
+        </ul>
+      </div>
+      <div class="card card-red" style="padding:14px">
+        <div style="font-size:22px;margin-bottom:8px">🔍</div>
+        <div class="card-label">3. Debug และ Code Review</div>
+        <ul class="ul" style="margin-top:4px">
+          <li>Copy error message ให้ AI วิเคราะห์</li>
+          <li>ให้ AI หา edge case ที่มองข้าม</li>
+          <li>ตรวจสอบ Security Issue ก่อน deploy</li>
+        </ul>
+      </div>
+      <div class="card card-amber" style="padding:14px">
+        <div style="font-size:22px;margin-bottom:8px">⚛</div>
+        <div class="card-label">4. แปลง HTML → React</div>
+        <ul class="ul" style="margin-top:4px">
+          <li>ให้ AI แนะนำว่าแยก Component ตรงไหน</li>
+          <li>cart.html → CartPage + CartItem + OrderSummary</li>
+          <li>payment.html → PaymentPage + PaymentOption + Modal</li>
+        </ul>
+      </div>
+      <div class="card card-orange" style="padding:14px">
+        <div style="font-size:22px;margin-bottom:8px">📝</div>
+        <div class="card-label">5. เขียน API Docs</div>
+        <ul class="ul" style="margin-top:4px">
+          <li>ให้ AI สรุป API Spec จากโค้ดจริง</li>
+          <li>สร้าง .rest file สำหรับทดสอบ API</li>
+          <li>สรุป summary.md เพื่อทำ Slides</li>
+        </ul>
+      </div>
+      <div class="card card-gray" style="padding:14px;border:2px solid var(--primary)">
+        <div style="font-size:22px;margin-bottom:8px">✅</div>
+        <div class="card-label" style="color:var(--primary-dark)">หลักการใช้ AI อย่างถูกต้อง</div>
+        <ul class="ul" style="margin-top:4px">
+          <li><strong>ให้ AI อธิบาย</strong>โค้ดทุกครั้งก่อน copy</li>
+          <li><strong>ตรวจสอบ output</strong> เสมอ — AI ผิดได้</li>
+          <li><strong>ใช้เป็น Pair Programmer</strong> — ถาม ตอบ ปรับ</li>
+          <li><strong>เรียนจาก Process</strong> ไม่ใช่แค่ผลลัพธ์</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Key learnings -->
+    <div class="card card-blue" style="padding:12px">
+      <div style="font-size:11px;font-weight:700;color:var(--primary-dark);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.08em">สิ่งที่ทีมเรียนรู้ได้จากการใช้ AI ในโปรเจกต์นี้</div>
+      <div class="tag-row">
+        <span class="tag">HttpOnly Cookie Security</span>
+        <span class="tag">Mongoose Pre-save Hooks</span>
+        <span class="tag">Context API Pattern</span>
+        <span class="tag">Auto-increment ด้วย Counter</span>
+        <span class="tag">Centralized Error Handler</span>
+        <span class="tag">JWT Authentication Flow</span>
+        <span class="tag">Role-based Authorization</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     SLIDE 11 — TECH STACK
+════════════════════════════════════ -->
+<div class="slide">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <div class="label-row">
+        <span class="label-num">สรุป</span>
+        <span class="label-tag">Tech Stack</span>
+      </div>
+      <div class="slide-title">เทคโนโลยีทั้งหมดที่ใช้ในโปรเจกต์</div>
+      <div class="slide-desc">เลือกเทคโนโลยีที่ใช้งานได้จริงในอุตสาหกรรม ทั้ง Frontend, Backend, Database และ Cloud Services</div>
+    </div>
+
+    <div class="g2">
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div class="card card-blue" style="padding:16px">
+          <div class="card-label">⚛ Frontend</div>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+            <div style="display:grid;grid-template-columns:120px 1fr;gap:8px;align-items:center">
+              <span class="badge b-blue" style="justify-content:center">React 19</span>
+              <span style="font-size:12px;color:var(--text-2)">สร้าง UI แบบ Component-based ใช้ hooks และ Context API</span>
+            </div>
+            <div style="display:grid;grid-template-columns:120px 1fr;gap:8px;align-items:center">
+              <span class="badge b-blue" style="justify-content:center">Vite 8</span>
+              <span style="font-size:12px;color:var(--text-2)">Build tool ที่เร็วมาก รองรับ Hot Module Replacement</span>
+            </div>
+            <div style="display:grid;grid-template-columns:120px 1fr;gap:8px;align-items:center">
+              <span class="badge b-blue" style="justify-content:center">React Router 7</span>
+              <span style="font-size:12px;color:var(--text-2)">จัดการ URL และ Navigation ใน SPA</span>
+            </div>
+            <div style="display:grid;grid-template-columns:120px 1fr;gap:8px;align-items:center">
+              <span class="badge b-blue" style="justify-content:center">Tailwind CSS 4</span>
+              <span style="font-size:12px;color:var(--text-2)">Utility-first CSS ออกแบบหน้าตาเว็บได้เร็วขึ้นมาก</span>
+            </div>
+          </div>
+        </div>
+        <div class="card card-green" style="padding:16px">
+          <div class="card-label">🚀 Deploy &amp; Cloud</div>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+            <div style="display:grid;grid-template-columns:120px 1fr;gap:8px;align-items:center">
+              <span class="badge b-blue" style="justify-content:center">▲ Vercel</span>
+              <span style="font-size:12px;color:var(--text-2)">Deploy Frontend อัตโนมัติทุกครั้งที่ push code</span>
+            </div>
+            <div style="display:grid;grid-template-columns:120px 1fr;gap:8px;align-items:center">
+              <span class="badge b-green" style="justify-content:center">🚂 Railway</span>
+              <span style="font-size:12px;color:var(--text-2)">Deploy Backend Node.js ง่าย รองรับ environment vars</span>
+            </div>
+            <div style="display:grid;grid-template-columns:120px 1fr;gap:8px;align-items:center">
+              <span class="badge b-green" style="justify-content:center">🍃 MongoDB Atlas</span>
+              <span style="font-size:12px;color:var(--text-2)">Cloud Database พร้อมใช้ ไม่ต้องตั้งค่าเซิร์ฟเวอร์</span>
+            </div>
+            <div style="display:grid;grid-template-columns:120px 1fr;gap:8px;align-items:center">
+              <span class="badge b-amber" style="justify-content:center">☁ Cloudinary</span>
+              <span style="font-size:12px;color:var(--text-2)">จัดการรูปภาพบน Cloud ปรับขนาดและ optimize ได้</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div class="card" style="padding:16px">
+          <div class="card-label">⚙ Backend</div>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+            <div style="display:grid;grid-template-columns:120px 1fr;gap:8px;align-items:center">
+              <span class="badge b-gray" style="justify-content:center">Express 5</span>
+              <span style="font-size:12px;color:var(--text-2)">Web Framework สำหรับสร้าง REST API ด้วย Node.js</span>
+            </div>
+            <div style="display:grid;grid-template-columns:120px 1fr;gap:8px;align-items:center">
+              <span class="badge b-gray" style="justify-content:center">Mongoose 9</span>
+              <span style="font-size:12px;color:var(--text-2)">ODM สำหรับ MongoDB กำหนด Schema และ Validation</span>
+            </div>
+            <div style="display:grid;grid-template-columns:120px 1fr;gap:8px;align-items:center">
+              <span class="badge b-gray" style="justify-content:center">jsonwebtoken</span>
+              <span style="font-size:12px;color:var(--text-2)">สร้างและตรวจสอบ JWT Token สำหรับ Authentication</span>
+            </div>
+            <div style="display:grid;grid-template-columns:120px 1fr;gap:8px;align-items:center">
+              <span class="badge b-gray" style="justify-content:center">bcrypt</span>
+              <span style="font-size:12px;color:var(--text-2)">เข้ารหัส password ก่อนเก็บ (ไม่เก็บ plain text)</span>
+            </div>
+          </div>
+        </div>
+        <div class="card card-red" style="padding:16px">
+          <div class="card-label" style="color:#9b1c1c">🔒 Security</div>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+            <div style="display:grid;grid-template-columns:120px 1fr;gap:8px;align-items:center">
+              <span class="badge b-red" style="justify-content:center">Helmet</span>
+              <span style="font-size:12px;color:var(--text-2)">ตั้งค่า HTTP Headers ปลอดภัยอัตโนมัติ</span>
+            </div>
+            <div style="display:grid;grid-template-columns:120px 1fr;gap:8px;align-items:center">
+              <span class="badge b-red" style="justify-content:center">CORS</span>
+              <span style="font-size:12px;color:var(--text-2)">อนุญาตเฉพาะ URL ที่กำหนดให้เรียก API ได้</span>
+            </div>
+            <div style="display:grid;grid-template-columns:120px 1fr;gap:8px;align-items:center">
+              <span class="badge b-red" style="justify-content:center">Rate Limit</span>
+              <span style="font-size:12px;color:var(--text-2)">จำกัด 100 req/15 นาที ป้องกัน DDoS</span>
+            </div>
+            <div style="display:grid;grid-template-columns:120px 1fr;gap:8px;align-items:center">
+              <span class="badge b-red" style="justify-content:center">HttpOnly Cookie</span>
+              <span style="font-size:12px;color:var(--text-2)">ซ่อน Token จาก JavaScript ป้องกัน XSS</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     SLIDE 12 — END
+════════════════════════════════════ -->
+<div class="slide cover-slide">
+  <div style="text-align:center;color:white;max-width:600px;margin:auto">
+    <div style="font-size:56px;margin-bottom:16px">🌞</div>
+    <div style="font-size:12px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(251,191,36,0.8);font-weight:600;margin-bottom:12px">Thank You</div>
+    <div style="font-size:40px;font-weight:700;margin-bottom:8px">AAA <span style="color:#fbbf24">Omega</span></div>
+    <div style="font-size:15px;font-weight:300;color:rgba(255,255,255,0.6);margin-bottom:28px">Solar Cell E-Commerce &amp; Service Platform</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;max-width:480px;margin:0 auto 20px">
+      <div style="padding:12px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:10px">
+        <div style="font-size:18px;margin-bottom:4px">⚛</div>
+        <div style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.8)">React 19</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.4)">Frontend</div>
+      </div>
+      <div style="padding:12px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:10px">
+        <div style="font-size:18px;margin-bottom:4px">⚙</div>
+        <div style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.8)">Express 5</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.4)">Backend</div>
+      </div>
+      <div style="padding:12px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:10px">
+        <div style="font-size:18px;margin-bottom:4px">🍃</div>
+        <div style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.8)">MongoDB</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.4)">Database</div>
+      </div>
+    </div>
+    <div style="font-size:11px;color:rgba(255,255,255,0.25);letter-spacing:0.1em">JSD12 · Group Omega · 2025</div>
+  </div>
+</div>
+
+</div><!-- /slides -->
+
+<script>
+const slides = document.querySelectorAll('.slide');
+const total = slides.length;
+let current = 0, animating = false;
+
+const bar     = document.getElementById('progress-bar');
+const counter = document.getElementById('slide-counter');
+const dotsEl  = document.getElementById('nav-dots');
+
+slides.forEach((_, i) => {
+  const d = document.createElement('div');
+  d.className = 'dot' + (i === 0 ? ' active' : '');
+  d.title = `Slide ${i + 1}`;
+  d.addEventListener('click', () => goTo(i));
+  dotsEl.appendChild(d);
+});
+
+function updateUI() {
+  bar.style.width = ((current + 1) / total * 100) + '%';
+  counter.textContent = `${current + 1} / ${total}`;
+  document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === current));
+}
+
+function goTo(idx) {
+  if (animating || idx === current || idx < 0 || idx >= total) return;
+  animating = true;
+  const from = slides[current], to = slides[idx];
+  const dir = idx > current ? 1 : -1;
+
+  from.style.transition = 'opacity 0.35s ease, transform 0.35s ease';
+  from.style.transform = `translateX(${dir * -50}px)`;
+  from.style.opacity = '0';
+
+  to.style.transition = 'none';
+  to.style.transform = `translateX(${dir * 50}px)`;
+  to.style.opacity = '0';
+  to.classList.add('active');
+
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    to.style.transition = 'opacity 0.35s ease, transform 0.35s ease';
+    to.style.transform = 'translateX(0)';
+    to.style.opacity = '1';
+  }));
+
+  setTimeout(() => {
+    from.classList.remove('active');
+    from.style.transform = '';
+    from.style.opacity = '';
+    from.style.transition = '';
+    animating = false;
+  }, 370);
+
+  current = idx;
+  updateUI();
+}
+
+document.getElementById('nav-next').addEventListener('click', () => goTo(current + 1));
+document.getElementById('nav-prev').addEventListener('click', () => goTo(current - 1));
+
+document.addEventListener('keydown', e => {
+  if (['ArrowRight','ArrowDown',' '].includes(e.key)) { e.preventDefault(); goTo(current + 1); }
+  if (['ArrowLeft','ArrowUp'].includes(e.key))         { e.preventDefault(); goTo(current - 1); }
+  if (e.key === 'Home') goTo(0);
+  if (e.key === 'End')  goTo(total - 1);
+});
+
+let tx = 0;
+document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+document.addEventListener('touchend',   e => {
+  const dx = tx - e.changedTouches[0].clientX;
+  if (Math.abs(dx) > 48) dx > 0 ? goTo(current + 1) : goTo(current - 1);
+});
+
+updateUI();
+</script>
+</body>
+</html>
