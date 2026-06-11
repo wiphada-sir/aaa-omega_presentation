@@ -1,0 +1,283 @@
+@import "tailwindcss";
+
+@theme {
+  --font-kanit:"Kanit", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --breakpoint-2xs:20rem; /* 320px */
+  --breakpoint-xs:29.875rem; /* 478px */
+
+  /* Primary */
+  --color-primary-lighter:#f0efff;
+  --color-primary-light  :#dde1ff;
+  --color-primary-disable:#b8c3ff;
+  --color-primary-soft   :#99a7ed;
+  --color-primary-base   :#7f8dd1;
+  --color-primary-hover  :#6573b5;
+  --color-primary-dark   :#1c2b69;
+  --color-primary-darker :#011354;
+
+  /* Accent - Secondary */
+  --color-accent-lighter:#fffbeb;
+  --color-accent-light  :#fef3c7;
+  --color-accent-disable:#fde68a;
+  --color-accent-soft   :#fcd34d;
+  --color-accent-base   :#fbbf24;
+  --color-accent-hover  :#f59e0b;
+  --color-accent-dark   :#92400e;
+  --color-accent-darker :#451a03;
+
+  /* Error */
+  --color-error-lighter:#ffedec;
+  --color-error-light  :#ffdad9;
+  --color-error-disable:#ffb3b3;
+  --color-error-soft   :#ff888b;
+  --color-error-base   :#ff525f;
+  --color-error-hover  :#dd3547;
+  --color-error-dark   :#680014;
+  --color-error-darker :#400009;
+
+  /* Warning */
+  --color-warning-lighter:#ffede5;
+  --color-warning-light  :#ffdbca;
+  --color-warning-disable:#ffb68e;
+  --color-warning-soft   :#ff8d47;
+  --color-warning-base   :#e96c0a;
+  --color-warning-hover  :#c25800;
+  --color-warning-dark   :#542200;
+  --color-warning-darker :#331200;
+
+  /* Success */
+  --color-success-lighter:#c8ffc1;
+  --color-success-light  :#b6f2af;
+  --color-success-disable:#77dc78;
+  --color-success-soft   :#5cc060;
+  --color-success-base   :#40a448;
+  --color-success-hover  :#208931;
+  --color-success-dark   :#00390c;
+  --color-success-darker :#002204;
+
+  /* Info */
+
+  /* Neutral for background/border */
+  --color-neutral-lighter:#f8fafc;
+  --color-neutral-light  :#f1f5f9;
+  --color-neutral-disable:#e2e8f0;
+  --color-neutral-soft   :#cad5e2;
+  --color-neutral-base   :#90a1b9;
+  --color-neutral-hover  :#62748e;
+  --color-neutral-dark   :#1d293d;
+  --color-neutral-darker :#0f172b;
+
+  /* Content for text/content/foreground */
+  --color-content-lighter:#f9fafb;
+  --color-content-light  :#f3f4f6;
+  --color-content-disable:#e5e7eb;
+  --color-content-soft   :#99a1af;
+  --color-content-base   :#6a7282;
+  --color-content-hover  :#4a5565;
+  --color-content-dark   :#1e2939;
+  --color-content-darker :#101828;
+}
+
+@layer base {
+  *, :before, :after {@apply p-0 m-0 box-border border-neutral-disable outline-neutral-soft;}
+  input, textarea, select, button, a {@apply focus:outline-none transition-all;}
+  body {@apply font-kanit font-normal text-base text-content-base;}
+      .h0 {@apply text-4xl  text-content-hover;}
+  h1, .h1 {@apply text-2xl leading-10 text-primary-hover;}
+  h2, .h2 {@apply text-xl   text-content-hover;}
+  h3, .h3 {@apply text-lg   text-content-hover;}
+  h4, .h4 {@apply text-base text-content-hover;}
+  h5, .h5 {@apply text-sm   text-content-hover;}
+  h6, .h6 {@apply text-xs   text-content-hover;}
+  hr {@apply w-full border-neutral-disable;}
+  button, [role=button] {@apply cursor-pointer;}
+  img {@apply rounded-lg transition-all;}
+  img:is([src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="]) {
+    @apply bg-neutral-light hover:bg-neutral-disable;}
+  table {@apply w-full;}
+  table tr {@apply border-t border-neutral-light;}
+  table tbody tr {@apply hover:bg-neutral-lighter transition-all;}
+  table:has(thead) tbody tr:first-child {@apply border-neutral-disable;}
+  table :last-child tr:last-child {@apply border-b;}
+  table :is(th, td) {@apply align-top leading-7 px-2 xl:px-5 py-2;}
+  table th {@apply whitespace-nowrap font-normal text-left text-content-hover;}
+  table :is(th, td):first-child {@apply pl-0;}
+  table :is(th, td):last-child  {@apply pr-0;}
+  table :is(a, button) {@apply hover:text-primary-hover;}
+  table td:last-child span.button {@apply w-full;}
+  .table-container {@apply w-full overflow-auto;}
+  .table-container table :is(th, td) {@apply h-14.25 whitespace-nowrap align-middle;}
+  .table-responsive tr {@apply border-none hover:bg-transparent;}
+  .table-responsive :is(th, td) {@apply max-2xs:block max-2xs:leading-6 max-2xs:p-0 py-0;}
+  .table-responsive tbody tr:not(:last-child) :is(th, td):last-child {@apply max-2xs:pb-2;}
+  .table-responsive th {@apply whitespace-nowrap;}
+
+  form {@apply flex flex-row flex-wrap justify-between items-center gap-5 w-full;}
+  .heading-row {@apply flex flex-col xs:flex-row flex-wrap justify-between xs:items-center gap-5;}
+  .input-row {@apply flex flex-col sm:flex-row gap-5 w-full;}
+  .input-col {@apply flex flex-col gap-5 w-full;}
+  .input-group {@apply relative flex flex-col gap-2 w-full;}
+  .button-row {@apply flex flex-row-reverse flex-wrap justify-end items-center grow gap-5 w-full xs:w-fit;}
+  .button-row button {@apply grow xs:grow-0;}
+  fieldset {@apply flex flex-col gap-5 w-full;}
+  legend {@apply text-content-hover pb-6 sm:pb-4;}
+  label {@apply flex items-center gap-2 w-fit text-sm hover:text-primary-hover;}
+  .input-group:has(:is(input, textarea, select):hover) label {@apply text-primary-hover;}
+  .input-group label:not(.label-normal) {@apply max-sm:absolute max-sm:-translate-y-1/2 max-sm:left-2.75 max-sm:px-1.5 max-sm:rounded-md max-sm:bg-white;}
+  input, textarea, select {@apply w-full leading-5.5 placeholder:text-content-disable disabled:text-content-disable px-4 py-2 border border-neutral-disable hover:border-neutral-base disabled:border-neutral-disable rounded-lg bg-white;}
+  input[type="password"] {@apply text-xl tracking-[0.2em];}       
+  input[type="range"] {@apply cursor-pointer appearance-none px-0 py-4.75 border-none focus:outline-none bg-transparent;}
+  input[type="range"]::-webkit-slider-runnable-track {@apply h-0.5 rounded-full bg-neutral-disable;}
+  input[type="range"]::-webkit-slider-thumb {@apply appearance-none w-6 h-2 rounded-full -mt-0.75 bg-primary-base;}
+  input[type="range"]::-moz-range-track {@apply h-0.5 rounded-full bg-neutral-disable;}
+  input[type="range"]::-moz-range-thumb {@apply w-6 h-2 border-none rounded-full bg-primary-base;}
+  input[type="range"]:focus::-webkit-slider-thumb {@apply outline-2 outline-neutral-base outline-offset-4;}
+  input[type="range"]:focus::-moz-range-thumb {@apply outline-2 outline-neutral-base outline-offset-4;}
+  input[type="time"] {@apply h-10;}
+  textarea {@apply field-sizing-content min-h-30 max-h-[80dvh];}
+  select {@apply cursor-pointer w-auto px-3! py-1.5 transition-none!;}
+  select option {@apply text-content-base bg-white;}
+  select option[disabled] {@apply text-content-disable bg-white;}
+
+  details {@apply overflow-hidden rounded-lg bg-neutral-lighter;}
+  details * {@apply transition-all;}
+  details + details {@apply mt-4;}
+  details summary {@apply cursor-pointer flex justify-between items-center text-content-base hover:text-content-hover px-5 py-4 border border-neutral-lighter hover:border-neutral-base rounded-lg bg-neutral-lighter;}
+  details[open] summary {@apply text-white border-content-base hover:border-primary-hover bg-content-base hover:bg-primary-hover;}
+  details summary + * {@apply pt-4;}
+  details > *:not(summary) {@apply px-5;}
+  details > *:not(summary):last-child {@apply pb-4;}
+  details summary::marker {@apply hidden;}
+  details summary:after {@apply content-['add'] size-6;}
+  details[open] summary:after {@apply content-['close'];}
+}
+
+@layer components {
+  .icon-material ,
+  summary:after {
+    font-family:"Material Symbols Outlined"; font-weight:normal; font-style:normal; font-size:24px;
+    line-height:1; letter-spacing:normal; text-transform:none;
+    display:inline-block; vertical-align:bottom; white-space:nowrap; word-wrap:normal; direction:ltr;
+    font-feature-settings:"liga"; -webkit-font-smoothing:antialiased;
+  }
+  /* Google Icon */
+  .icon-material.wght-700           {font-variation-settings:'FILL' 0, 'wght' 700, 'GRAD' 0, 'opsz' 24;}
+  .icon-material.wght-600           {font-variation-settings:'FILL' 0, 'wght' 600, 'GRAD' 0, 'opsz' 24;}
+  .icon-material.wght-500           {font-variation-settings:'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;}
+  .icon-material.wght-400           {font-variation-settings:'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;}
+  .icon-material ,
+  .icon-material.icon-outline       {font-variation-settings:'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;}
+  .icon-material.wght-200           {font-variation-settings:'FILL' 0, 'wght' 200, 'GRAD' 0, 'opsz' 24;}
+  .icon-material.wght-100           {font-variation-settings:'FILL' 0, 'wght' 100, 'GRAD' 0, 'opsz' 24;}
+  .icon-material.icon-fill.wght-700 {font-variation-settings:'FILL' 1, 'wght' 700, 'GRAD' 0, 'opsz' 24;}
+  .icon-material.icon-fill.wght-600 {font-variation-settings:'FILL' 1, 'wght' 600, 'GRAD' 0, 'opsz' 24;}
+  .icon-material.icon-fill.wght-500 {font-variation-settings:'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;}
+  .icon-material.icon-fill.wght-400 {font-variation-settings:'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;}
+  .icon-material.icon-fill          {font-variation-settings:'FILL' 1, 'wght' 300, 'GRAD' 0, 'opsz' 24;}
+  .icon-material.icon-fill.wght-200 {font-variation-settings:'FILL' 1, 'wght' 200, 'GRAD' 0, 'opsz' 24;}
+  .icon-material.icon-fill.wght-100 {font-variation-settings:'FILL' 1, 'wght' 100, 'GRAD' 0, 'opsz' 24;}
+
+  .button           {@apply relative hover:z-10 inline-flex justify-center items-center gap-2 min-h-10 leading-10 text-white px-4 border-0 rounded-lg transition-all;}
+  .button-icon      {@apply justify-center size-10 p-0;}
+  .button .icon-material {@apply -mx-1;}
+  .button:disabled ,
+  a.is-disabled ,
+  .button.is-disabled ,
+  .button[aria-disabled="true"] {@apply opacity-40 cursor-not-allowed pointer-events-none;}
+  .badge                {@apply inline-flex items-center align-middle gap-1 w-fit min-h-5 text-xs whitespace-nowrap leading-5 text-white px-2 rounded-sm transition-all;}
+  /*.badge:not(a)       {@apply cursor-default;}*/
+  .badge-icon           {@apply justify-center size-5 p-0;}
+  .badge-pill           {@apply rounded-full;}
+  .badge .icon-material {@apply text-sm -mx-0.5;}
+  .badge-sm {@apply min-h-4 text-[10px] leading-3.5 px-1.5;}
+  .badge-sm .icon-material {@apply text-[12px] leading-4 -mx-0.5;}
+  .badge-sm.badge-icon {@apply size-4 p-0;}
+  .button , .badge ,
+  .button-primary , .badge-primary {@apply bg-primary-base hover:bg-primary-hover;}
+  .button-accent  , .badge-accent  {@apply bg-accent-base  hover:bg-accent-hover ;}
+  .button-error   , .badge-error   {@apply bg-error-base   hover:bg-error-hover  ;}
+  .button-warning , .badge-warning {@apply bg-warning-base hover:bg-warning-hover;}
+  .button-success , .badge-success {@apply bg-success-base hover:bg-success-hover;}
+  .button-neutral , .badge-neutral {@apply bg-neutral-base hover:bg-neutral-hover;}
+  .button-content , .badge-content {@apply bg-content-base hover:bg-content-hover;}
+  .button-soft , .badge-soft {@apply border-none;}
+  .button-soft , .badge-soft ,
+  .button-soft.button-primary , .badge-soft.badge-primary {@apply text-primary-hover bg-primary-lighter/40 hover:bg-primary-light/60;}
+  .button-soft.button-accent  , .badge-soft.badge-accent  {@apply text-accent-hover  bg-accent-lighter/60  hover:bg-accent-light/80 ;}
+  .button-soft.button-error   , .badge-soft.badge-error   {@apply text-error-hover   bg-error-lighter/40   hover:bg-error-light/60  ;}
+  .button-soft.button-warning , .badge-soft.badge-warning {@apply text-warning-hover bg-warning-lighter/40 hover:bg-warning-light/60;}
+  .button-soft.button-success , .badge-soft.badge-success {@apply text-success-hover bg-success-lighter/20 hover:bg-success-light/40;}
+  .button-soft.button-neutral , .badge-soft.badge-neutral {@apply text-neutral-hover bg-neutral-lighter    hover:bg-neutral-light   ;}
+  .button-soft.button-content , .badge-soft.badge-content {@apply text-content-base  bg-content-lighter    hover:bg-content-light   ;}
+  .button-outline {@apply leading-9.5;}
+  .badge-outline  {@apply leading-4.5;}
+  .badge-sm.badge-outline  {@apply leading-3.5;}
+  .button-outline , .badge-outline {@apply border bg-white hover:bg-white;}
+  .button-outline , .badge-outline ,
+  .button-outline.button-primary , .badge-outline.badge-primary {@apply text-primary-base  border-primary-disable hover:border-primary-hover;}
+  .button-outline.button-accent  , .badge-outline.badge-accent  {@apply text-accent-hover  border-accent-base     hover:border-accent-hover ;}
+  .button-outline.button-error   , .badge-outline.badge-error   {@apply text-error-base    border-error-disable   hover:border-error-hover  ;}
+  .button-outline.button-warning , .badge-outline.badge-warning {@apply text-warning-base  border-warning-base    hover:border-warning-hover;}
+  .button-outline.button-success , .badge-outline.badge-success {@apply text-success-base  border-success-disable hover:border-success-hover;}
+  .button-outline.button-neutral , .badge-outline.badge-neutral {@apply text-neutral-base  border-neutral-disable hover:border-neutral-hover;}
+  .button-outline.button-content , .badge-outline.badge-content {@apply text-content-base  border-content-disable hover:border-content-hover;}
+  .button-ghost , .badge-ghost {@apply bg-transparent hover:bg-white;}
+  .button-ghost , .badge-ghost ,
+  .button-ghost.button-primary , .badge-ghost.badge-primary {@apply text-primary-base;}
+  .button-ghost.button-accent  , .badge-ghost.badge-accent  {@apply text-accent-base ;}
+  .button-ghost.button-error   , .badge-ghost.badge-error   {@apply text-error-base  ;}
+  .button-ghost.button-warning , .badge-ghost.badge-warning {@apply text-warning-base;}
+  .button-ghost.button-success , .badge-ghost.badge-success {@apply text-success-base;}
+  .button-ghost.button-neutral , .badge-ghost.badge-neutral {@apply text-neutral-base;}
+  .button-ghost.button-content , .badge-ghost.badge-content {@apply text-content-base;}
+  .button-group:has(.button) {@apply flex;}
+  .button-group > .button:not(:first-child,:last-child) ,
+  .button-group :not(:first-child,:last-child) .button {@apply rounded-none;}
+  .button-group > .button:first-child  ,
+  .button-group :first-child .button {@apply rounded-r-none;}
+  .button-group > .button:last-child   ,
+  .button-group :last-child .button  {@apply rounded-l-none;}
+  .button-group > .button:is(.button-outline):not(:first-child) {@apply -ml-px;}
+
+  .pagination {@apply flex flex-wrap items-center gap-2 mt-5;}
+}
+
+#stat {@apply flex gap-5 overflow-auto;}
+.card-stat {@apply min-w-37 text-right px-4 py-3 rounded-lg border border-neutral-disable hover:border-primary-light hover:bg-primary-lighter/40 transition-all;}
+.card-stat * {@apply whitespace-nowrap;}
+.card-stat__title {@apply block text-sm text-content-base;}
+.card-stat__value {@apply block text-2xl leading-6 text-content-hover mt-1;}
+.card-stat:hover .card-stat__value {@apply text-primary-hover;}
+.card-stat__subtext {@apply inline-flex text-xs not-italic text-content-base leading-5;}
+
+.product-stock__image {@apply block;}
+.product-stock__name {@apply hover:text-primary-hover;}
+.product-stock__sku {@apply text-sm text-content-soft;}
+.product-stock__separator {@apply text-sm text-content-base;}
+.product-stock__meta ,
+.product-stock__tag {@apply flex items-center gap-2;}
+.product-stock__tag .badge {@apply capitalize text-content-soft bg-neutral-light;}
+
+@layer utilities {
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-neutral-disable rounded-full;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    @apply bg-neutral-soft;
+  }
+}
+
+.card-search-result {@apply flex flex-col min-w-37 text-sm text-content-base/80 text-left px-4 py-3 rounded-lg border border-neutral-disable hover:border-primary-light hover:bg-primary-lighter/40 transition-all;}
+.card-search-result > span:first-child {@apply text-content-base;}
+.card-search-result:hover > span:first-child {@apply text-primary-hover;}
+
+.toast {@apply pointer-events-none fixed z-29 bottom-10 right-5 md:right-10 tracking-wider text-primary-hover
+               px-6 py-4 border-2 border-primary-soft rounded-lg bg-white shadow-lg/5 duration-300 transition-all;}
+.toast-show {@apply opacity-100 translate-y-0;}
+.toast-hide {@apply opacity-0   translate-y-5;}
