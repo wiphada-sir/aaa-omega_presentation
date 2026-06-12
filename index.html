@@ -120,10 +120,10 @@ html, body {
   letter-spacing: 0.1em; text-transform: uppercase;
 }
 .slide-title {
-  font-size: 26px; font-weight: 700; color: var(--text-1); line-height: 1.2;
+  font-size: 32px; font-weight: 700; color: var(--text-1); line-height: 1.2;
 }
 .slide-desc {
-  font-size: 13.5px; font-weight: 300; color: var(--text-3); line-height: 1.65;
+  font-size: 17px; font-weight: 300; color: var(--text-3); line-height: 1.65;
 }
 
 /* ── Cards ── */
@@ -140,11 +140,11 @@ html, body {
 .card-gray   { background: var(--surface-2);       border-color: var(--border); }
 
 .card-label {
-  font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em;
+  font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em;
   color: var(--primary); margin-bottom: 8px;
 }
-.card-title { font-size: 14px; font-weight: 600; color: var(--text-1); margin-bottom: 6px; }
-.card-body  { font-size: 12.5px; color: var(--text-2); line-height: 1.7; }
+.card-title { font-size: 16px; font-weight: 600; color: var(--text-1); margin-bottom: 6px; }
+.card-body  { font-size: 14px; color: var(--text-2); line-height: 1.7; }
 
 /* ── Grids ── */
 .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
@@ -165,16 +165,16 @@ html, body {
 .b-gray   { background: var(--surface-2);       color: var(--text-3); border: 1px solid var(--border); }
 
 /* ── Bullet List ── */
-.ul { list-style: none; display: flex; flex-direction: column; gap: 5px; }
-.ul li { display: flex; gap: 8px; font-size: 12.5px; color: var(--text-2); line-height: 1.55; }
-.ul li::before { content: '▸'; color: var(--primary); flex-shrink: 0; font-size: 11px; margin-top: 2px; }
+.ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.ul li { display: flex; gap: 8px; font-size: 14px; color: var(--text-2); line-height: 1.55; }
+.ul li::before { content: '▸'; color: var(--primary); flex-shrink: 0; font-size: 12px; margin-top: 2px; }
 
 /* ── Table ── */
-.tbl { width: 100%; border-collapse: collapse; font-size: 12px; }
-.tbl th { padding: 7px 10px; text-align: left; background: var(--surface-2);
-          color: var(--text-3); font-size: 10px; font-weight: 700; text-transform: uppercase;
+.tbl { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.tbl th { padding: 8px 12px; text-align: left; background: var(--surface-2);
+          color: var(--text-3); font-size: 11.5px; font-weight: 700; text-transform: uppercase;
           letter-spacing: 0.08em; border-bottom: 1.5px solid var(--border); }
-.tbl td { padding: 7px 10px; color: var(--text-2); border-bottom: 1px solid var(--border); vertical-align: middle; }
+.tbl td { padding: 8px 12px; color: var(--text-2); border-bottom: 1px solid var(--border); vertical-align: middle; }
 .tbl tr:last-child td { border-bottom: none; }
 .tbl tr:hover td { background: var(--surface-2); }
 .tbl th:first-child, .tbl td:first-child { border-radius: 0; }
@@ -233,7 +233,7 @@ html, body {
 .explain {
   background: var(--primary-lighter); border: 1.5px solid var(--primary-light);
   border-radius: 10px; padding: 12px 16px;
-  font-size: 12.5px; color: var(--primary-dark); line-height: 1.65;
+  font-size: 14px; color: var(--primary-dark); line-height: 1.65;
 }
 .explain strong { color: var(--primary-dark); font-weight: 600; }
 
@@ -855,6 +855,7 @@ html, body {
             <tr><td><span class="m m-patch">PATCH</span></td><td>/profile/password</td><td>✓ เปลี่ยนรหัสผ่าน</td></tr>
             <tr><td><span class="m m-get">GET</span></td><td>/</td><td>Staff | Admin</td></tr>
             <tr><td><span class="m m-patch">PATCH</span></td><td>/:id/role</td><td>Admin เท่านั้น</td></tr>
+            <tr><td><span class="m m-delete">DELETE</span></td><td>/:id</td><td>ลบ user (Staff | Admin)</td></tr>
           </tbody>
         </table>
       </div>
@@ -866,7 +867,8 @@ html, body {
             <thead><tr><th>Method</th><th>Path</th><th>ทำอะไร</th></tr></thead>
             <tbody>
               <tr><td><span class="m m-get">GET</span></td><td>/</td><td>ดูสินค้าทั้งหมด</td></tr>
-              <tr><td><span class="m m-get">GET</span></td><td>/number/:n</td><td>ดูตาม productNumber</td></tr>
+              <tr><td><span class="m m-get">GET</span></td><td>/number/:productNumber</td><td>ดูตาม productNumber</td></tr>
+              <tr><td><span class="m m-get">GET</span></td><td>/:id</td><td>ดูตาม id</td></tr>
               <tr><td><span class="m m-post">POST</span></td><td>/</td><td>เพิ่มสินค้าใหม่</td></tr>
               <tr><td><span class="m m-put">PUT</span></td><td>/:id</td><td>แก้ไขสินค้า</td></tr>
               <tr><td><span class="m m-delete">DELETE</span></td><td>/:id</td><td>ลบสินค้า</td></tr>
@@ -881,7 +883,8 @@ html, body {
               <tr><td><span class="m m-get">GET</span></td><td>/</td><td>ดูตะกร้า (พร้อมรายละเอียดสินค้า)</td></tr>
               <tr><td><span class="m m-post">POST</span></td><td>/add</td><td>เพิ่มสินค้าลงตะกร้า</td></tr>
               <tr><td><span class="m m-put">PUT</span></td><td>/update</td><td>แก้จำนวนสินค้า</td></tr>
-              <tr><td><span class="m m-delete">DELETE</span></td><td>/remove/:n</td><td>ลบสินค้าออกจากตะกร้า</td></tr>
+              <tr><td><span class="m m-delete">DELETE</span></td><td>/remove/:productNumber</td><td>ลบสินค้าออกจากตะกร้าทีละชิ้น</td></tr>
+              <tr><td><span class="m m-delete">DELETE</span></td><td>/clear</td><td>ลบสินค้าออกจากตะกร้าทั้งหมด</td></tr>
             </tbody>
           </table>
         </div>
@@ -916,7 +919,7 @@ html, body {
               <tr><td><span class="m m-post">POST</span></td><td>/</td><td>จองบริการ/นัดหมาย</td></tr>
               <tr><td><span class="m m-put">PUT</span></td><td>/:id</td><td>แก้ไขข้อมูลบริการ</td></tr>
               <tr><td><span class="m m-patch">PATCH</span></td><td>/:id/status</td><td>อัปเดตสถานะ</td></tr>
-              <tr><td><span class="m m-delete">DELETE</span></td><td>/:id</td><td>ลบบริการ</td></tr>
+              <tr><td><span class="m m-delete">DELETE</span></td><td>/:id</td><td>ลบข้อมูลบริการ</td></tr>
             </tbody>
           </table>
         </div>
@@ -981,11 +984,33 @@ html, body {
             💡 <strong>cloudinaryId</strong> ใช้สำหรับลบรูปจาก Cloudinary ได้ภายหลัง
           </div>
         </div>
+        <!-- Service -->
+        <div class="card card-orange" style="padding:14px">
+          <div class="card-label">SERVICE Schema — Auto-generate Number</div>
+          <div class="code" style="font-size:10.5px;margin-top:6px">
+<span class="kw">const</span> serviceSchema = <span class="kw">new</span> mongoose.<span class="fn">Schema</span>({<br>
+&nbsp;&nbsp;serviceNumber: { unique, <span class="fn">immutable</span> }, <span class="cmt">// "sv20250001"</span><br>
+&nbsp;&nbsp;serviceType: <span class="str">"install|clean|maintenance"</span>,<br>
+&nbsp;&nbsp;status: <span class="str">"request_received|scheduled"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="str">"|in_progress|completed|rescheduled|cancelled"</span>,<br>
+&nbsp;&nbsp;appointmentAt, team, title, description,<br>
+&nbsp;&nbsp;images: [{ url, cloudinaryId }],<br>
+&nbsp;&nbsp;internalNote,<br>
+&nbsp;&nbsp;customer: { userNumber, firstName, lastName,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;phone, email, serviceAddress: { addressLine,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;subdistrict, district, province, postcode } }<br>
+}, { timestamps: <span class="num">true</span> });<br>
+<span class="cmt">// pre("save"): "sv" + ปี + padStart(4) → "sv20250001"</span>
+          </div>
+          <div style="margin-top:8px;font-size:11.5px;color:var(--text-2);line-height:1.6;background:#ffede5;border-radius:6px;padding:8px">
+            💡 <strong>customer</strong> เก็บเป็น snapshot · <strong>images[]</strong> เก็บ cloudinaryId สำหรับลบรูปภายหลัง
+          </div>
+        </div>
       </div>
       <div style="display:flex;flex-direction:column;gap:10px">
         <!-- Order -->
         <div class="card card-green" style="padding:14px">
-          <div class="card-label">ORDER Schema — Auto-generate Number</div>
+          <div class="card-label">ORDER Schema</div>
           <div class="code" style="font-size:10.5px;margin-top:6px">
 <span class="kw">const</span> orderSchema = {<br>
 &nbsp;&nbsp;orderNumber: { unique, <span class="fn">immutable</span> },<br>
@@ -1001,22 +1026,36 @@ html, body {
         </div>
         <!-- Counter Pattern -->
         <div class="card" style="padding:14px;border-color:var(--primary);border-width:2px">
-          <div class="card-label">Counter Pattern — วิธีสร้าง ID อัตโนมัติ</div>
+          <div class="card-label">COUNTER Schema</div>
           <div style="font-size:12px;color:var(--text-2);margin:8px 0;line-height:1.6;background:var(--surface-2);border-radius:6px;padding:8px">
             MongoDB ไม่มี Auto-increment ในตัว — เราแก้ด้วยการสร้าง Collection ชื่อ <strong>Counter</strong> ที่เก็บตัวเลขล่าสุดของแต่ละ sequence
           </div>
           <div class="code" style="font-size:10.5px">
-<span class="cmt">// Counter: { _id: "user", seq: 42 }</span><br>
-<span class="kw">const</span> <span class="fn">getNextSequence</span> = <span class="kw">async</span>(name) => {<br>
-&nbsp;&nbsp;<span class="kw">return await</span> Counter.<span class="fn">findOneAndUpdate</span>(<br>
-&nbsp;&nbsp;&nbsp;&nbsp;{ _id: name },<br>
-&nbsp;&nbsp;&nbsp;&nbsp;{ $inc: { seq: <span class="num">1</span> } }, <span class="cmt">// บวก 1</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;{ upsert: <span class="num">true</span>, returnDocument: <span class="str">"after"</span> }<br>
-&nbsp;&nbsp;);<br>
-};
+<span class="kw">import</span> mongoose <span class="kw">from</span> <span class="str">"mongoose"</span>;<br><br>
+<span class="kw">const</span> counterSchema = <span class="kw">new</span> mongoose.<span class="fn">Schema</span>({<br>
+&nbsp;&nbsp;_id: <span class="fn">String</span>,<br>
+&nbsp;&nbsp;seq: { type: <span class="fn">Number</span>, default: <span class="num">0</span> }<br>
+}, { versionKey: <span class="num">false</span> });<br><br>
+<span class="kw">export const</span> Counter = mongoose.<span class="fn">model</span>(<span class="str">"Counter"</span>, counterSchema);
           </div>
           <div style="margin-top:8px;font-size:11.5px;color:var(--text-2);background:var(--primary-lighter);border-radius:6px;padding:8px">
             💡 เรียกใช้ใน <strong>pre("save")</strong> hook → ได้เลข userNumber/productNumber/orderNumber ที่ไม่ซ้ำกันเสมอ
+          </div>
+        </div>
+        <!-- Cart -->
+        <div class="card card-orange" style="padding:14px">
+          <div class="card-label">CART Schema</div>
+          <div class="code" style="font-size:10.5px;margin-top:6px">
+<span class="kw">const</span> cartSchema = <span class="kw">new</span> mongoose.<span class="fn">Schema</span>({<br>
+&nbsp;&nbsp;userNumber: { type: <span class="fn">Number</span>, unique, <span class="fn">immutable</span>, index },<br>
+&nbsp;&nbsp;items: [{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;productNumber: { type: <span class="fn">Number</span>, required, index },<br>
+&nbsp;&nbsp;&nbsp;&nbsp;quantity:      { type: <span class="fn">Number</span>, required, min: <span class="num">1</span> }<br>
+&nbsp;&nbsp;}]<br>
+}, { timestamps: <span class="num">true</span> });
+          </div>
+          <div style="margin-top:8px;font-size:11.5px;color:var(--text-2);line-height:1.6;background:#ffede5;border-radius:6px;padding:8px">
+            💡 <strong>userNumber</strong> เป็น unique → 1 user มีได้ 1 cart เท่านั้น · <strong>timestamps</strong> บันทึกเวลาอัปเดตอัตโนมัติ
           </div>
         </div>
       </div>
@@ -1052,7 +1091,7 @@ html, body {
         <div style="font-size:22px;margin-bottom:8px">📖</div>
         <div class="card-label">2. เรียนรู้ Concept ผ่านโค้ดจริง</div>
         <ul class="ul" style="margin-top:4px">
-          <li>ให้ AI อธิบาย HttpOnly Cookie vs localStorage</li>
+          <li>ให้ AI อธิบายเกี่ยวกับ Cookie vs localStorage</li>
           <li>เรียน Mongoose Hooks และ Schema validation</li>
           <li>เข้าใจ JWT Auth Flow ทีละขั้นตอน</li>
         </ul>
@@ -1100,7 +1139,7 @@ html, body {
     <div class="card card-blue" style="padding:12px">
       <div style="font-size:11px;font-weight:700;color:var(--primary-dark);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.08em">สิ่งที่ทีมเรียนรู้ได้จากการใช้ AI ในโปรเจกต์นี้</div>
       <div class="tag-row">
-        <span class="tag">HttpOnly Cookie Security</span>
+        <span class="tag">Cookie Security</span>
         <span class="tag">Mongoose Pre-save Hooks</span>
         <span class="tag">Context API Pattern</span>
         <span class="tag">Auto-increment ด้วย Counter</span>
@@ -1132,16 +1171,20 @@ html, body {
           <div class="card-label">⚛ Frontend</div>
           <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
             <div style="display:grid;grid-template-columns:120px 1fr;gap:8px;align-items:center">
-              <span class="badge b-blue" style="justify-content:center">React 19</span>
+              <span class="badge b-blue" style="justify-content:center">React.js</span>
               <span style="font-size:12px;color:var(--text-2)">สร้าง UI แบบ Component-based ใช้ hooks และ Context API</span>
             </div>
             <div style="display:grid;grid-template-columns:120px 1fr;gap:8px;align-items:center">
-              <span class="badge b-blue" style="justify-content:center">Vite 8</span>
+              <span class="badge b-blue" style="justify-content:center">Vite</span>
               <span style="font-size:12px;color:var(--text-2)">Build tool ที่เร็วมาก รองรับ Hot Module Replacement</span>
             </div>
             <div style="display:grid;grid-template-columns:120px 1fr;gap:8px;align-items:center">
-              <span class="badge b-blue" style="justify-content:center">React Router 7</span>
+              <span class="badge b-blue" style="justify-content:center">React Router</span>
               <span style="font-size:12px;color:var(--text-2)">จัดการ URL และ Navigation ใน SPA</span>
+            </div>
+            <div style="display:grid;grid-template-columns:120px 1fr;gap:8px;align-items:center">
+              <span class="badge b-blue" style="justify-content:center">React Context</span>
+              <span style="font-size:12px;color:var(--text-2)">เพื่อจัดการ State ใช้เก็บข้อมูลที่สามารถเข้าถึงได้จากหลายๆ Component</span>
             </div>
             <div style="display:grid;grid-template-columns:120px 1fr;gap:8px;align-items:center">
               <span class="badge b-blue" style="justify-content:center">Tailwind CSS 4</span>
@@ -1157,7 +1200,7 @@ html, body {
               <span style="font-size:12px;color:var(--text-2)">Deploy Frontend อัตโนมัติทุกครั้งที่ push code</span>
             </div>
             <div style="display:grid;grid-template-columns:120px 1fr;gap:8px;align-items:center">
-              <span class="badge b-green" style="justify-content:center">🚂 Railway</span>
+              <span class="badge b-green" style="justify-content:center">Render</span>
               <span style="font-size:12px;color:var(--text-2)">Deploy Backend Node.js ง่าย รองรับ environment vars</span>
             </div>
             <div style="display:grid;grid-template-columns:120px 1fr;gap:8px;align-items:center">
@@ -1176,11 +1219,11 @@ html, body {
           <div class="card-label">⚙ Backend</div>
           <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
             <div style="display:grid;grid-template-columns:120px 1fr;gap:8px;align-items:center">
-              <span class="badge b-gray" style="justify-content:center">Express 5</span>
+              <span class="badge b-gray" style="justify-content:center">Express.js</span>
               <span style="font-size:12px;color:var(--text-2)">Web Framework สำหรับสร้าง REST API ด้วย Node.js</span>
             </div>
             <div style="display:grid;grid-template-columns:120px 1fr;gap:8px;align-items:center">
-              <span class="badge b-gray" style="justify-content:center">Mongoose 9</span>
+              <span class="badge b-gray" style="justify-content:center">Mongoose</span>
               <span style="font-size:12px;color:var(--text-2)">ODM สำหรับ MongoDB กำหนด Schema และ Validation</span>
             </div>
             <div style="display:grid;grid-template-columns:120px 1fr;gap:8px;align-items:center">
@@ -1209,7 +1252,7 @@ html, body {
               <span style="font-size:12px;color:var(--text-2)">จำกัด 100 req/15 นาที ป้องกัน DDoS</span>
             </div>
             <div style="display:grid;grid-template-columns:120px 1fr;gap:8px;align-items:center">
-              <span class="badge b-red" style="justify-content:center">HttpOnly Cookie</span>
+              <span class="badge b-red" style="justify-content:center">Cookie</span>
               <span style="font-size:12px;color:var(--text-2)">ซ่อน Token จาก JavaScript ป้องกัน XSS</span>
             </div>
           </div>
@@ -1250,7 +1293,6 @@ html, body {
         <div style="font-size:14px;color:rgba(255,255,255,0.4);margin-top:6px">Runtime</div>
       </div>
     </div>
-    <div style="font-size:16px;color:rgba(255,255,255,0.25);letter-spacing:0.1em">JSD12 · Group Omega · 2025</div>
   </div>
 </div>
 
